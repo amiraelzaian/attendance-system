@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- JavaScript files -->
     <script type="module" src="./src/JS/main.js" defer></script>
+    <script type="module" defer src="./src/JS/componentsJS/header.js"></script>
     <!-- Fontawesome -->
     <link
       rel="stylesheet"
@@ -16,28 +17,7 @@
   </head>
   <body class="bg-[#eef2f7]">
     <!-- Header section -->
-    <header
-      class="w-full bg-[#FFFFFF] h-16 px-8 py-4 flex items-center justify-between shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
-    >
-      <a href="#" class="text-xl text-[#012970] font-semibold italic"
-        >Attendify</a
-      >
-      <div class="flex justify-between items-center gap-4">
-        <a href=""><i class="fa-regular fa-bell text-lg"></i></a>
-        <a href=""><i class="fa-regular fa-message text-lg"></i></a>
-        <a href="" class="hidden lg:flex items-center gap-1">
-          <img
-            src="./public/images/user-image.webp"
-            alt="userImage"
-            class="w-6 rounded-full"
-          />
-          <h4 class="text-[#012970]">Batoul</h4>
-        </a>
-        <button class="lg:hidden">
-          <i class="fa-solid fa-bars text-lg"></i>
-        </button>
-      </div>
-    </header>
+    <div id="header"></div>
     <!-- Main  section -->
     <main
       class="flex flex-col md:flex-row p-8 sm:p-16 justify-around items-center gap-8"
