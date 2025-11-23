@@ -1,5 +1,19 @@
 import "../style.css";
 
-import { auth, db } from "./firebase/firebase.js";
+import * as Auth from "./firebase/auth.js";
+import * as DB from "./firebase/firebase-helper.js";
 
-console.log("Firebase Ready:", auth, db);
+// Example UI function bindings
+const initUI = () => {};
+const handleSignUp = () => {};
+const handleSignIn = () => {};
+const handleLogOut = () => {};
+const handleCreateUser = () => {};
+const handleUpdateUser = () => {};
+const handleDeleteUser = () => {};
+const handleCreateCourse = () => {};
+const handleMarkAttendance = () => {};
+const handleCreateNotification = () => {};
+
+// Initialize UI
+initUI();
