@@ -3,10 +3,127 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Attendance-System</title>
+    <!-- JavaScript files -->
     <script type="module" src="./src/JS/main.js" defer></script>
+    <!-- Fontawesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Attendance-System</title>
   </head>
-  <body>
-    <h1 class="text-4xl p-1.5 text-blue-500 mx-auto my-5">hello world</h1>
+  <body class="bg-[#eef2f7]">
+    <!-- Header section -->
+    <header
+      class="w-full bg-[#FFFFFF] h-16 px-8 py-4 flex items-center justify-between shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
+    >
+      <a href="#" class="text-xl text-[#012970] font-semibold italic"
+        >Attendify</a
+      >
+      <div class="flex justify-between items-center gap-4">
+        <a href=""><i class="fa-regular fa-bell text-lg"></i></a>
+        <a href=""><i class="fa-regular fa-message text-lg"></i></a>
+        <a href="" class="hidden lg:flex items-center gap-1">
+          <img
+            src="./public/images/user-image.webp"
+            alt="userImage"
+            class="w-6 rounded-full"
+          />
+          <h4 class="text-[#012970]">Batoul</h4>
+        </a>
+        <button class="lg:hidden">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+      </div>
+    </header>
+    <!-- Main  section -->
+    <main
+      class="flex flex-col md:flex-row p-8 sm:p-16 justify-around items-center gap-8"
+    >
+      <!-- Left Section -->
+      <div class="flex flex-col justify-center text-center md:text-left">
+        <h1 class="text-4xl sm:text-5xl font-semibold text-gray-900">
+          Attendance
+        </h1>
+        <h2 class="text-4xl sm:text-5xl font-semibold text-[#012970] mt-2">
+          for your business
+        </h2>
+
+        <p class="mt-6 text-gray-600 max-w-[500px] leading-relaxed">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet,
+          itaque accusantium odio, soluta, corrupti aliquam quibusdam tempora at
+          cupiditate quis eum maiores libero veritatis? Dicta facilis sint
+          aliquid ipsum atque?
+        </p>
+      </div>
+
+      <!-- Right Section -->
+      <div class="">
+        <div class="w-fit bg-white shadow p-10">
+          <!-- Toggle Buttons -->
+          <div class="mb-6">
+            <div class="flex gap-4">
+              <!-- Teacher -->
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" class="size-3 md:size-4 accent-blue-600" />
+                <span class="text-gray-700">Teacher</span>
+              </label>
+
+              <!-- Admin -->
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" class="size-3 md:size-4 accent-blue-600" />
+                <span class="text-gray-700">Admin</span>
+              </label>
+
+              <!-- Student -->
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" class="size-3 md:size-4 accent-blue-600" />
+                <span class="text-gray-700">Student</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Username -->
+          <label class="text-sm text-gray-700">Username</label>
+          <input
+            type="text"
+            class="w-full outline-none border-gray-200 rounded-md px-3 py-2 mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <!-- Password -->
+          <label class="text-sm text-gray-700">Password</label><br />
+          <input
+            type="password"
+            class="w-full max-w-2xl border-gray-200 rounded-md px-3 py-2 mt-1 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <!-- Remember Me -->
+          <div class="flex items-center gap-2 mb-5 mt-2">
+            <input type="checkbox" class="accent-blue-600" />
+            <span class="text-sm text-gray-700">Remember me</span>
+          </div>
+
+          <!-- Sign In button -->
+          <button
+            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          >
+            <a href="./src/Pages/student/dashboard.html">Sign in</a>
+          </button>
+
+          <!-- Forgot password -->
+          <p class="text-sm text-gray-500 mt-3 cursor-pointer hover:underline">
+            Forgot password?
+          </p>
+
+          <!-- Register -->
+          <p class="text-sm text-gray-600 mt-6">
+            Don’t have an account?
+            <a href="#" class="text-blue-600 hover:underline">Register here</a>
+          </p>
+        </div>
+      </div>
+    </main>
   </body>
 </html>
