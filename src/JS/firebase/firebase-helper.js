@@ -18,24 +18,18 @@ import {
 
 /* ================ HELPER FUNCTIONS ================ */
 
-/**
- * إنشاء ID فريد باستخدام timestamp + random
- */
+// generate unique ID
 const generateId = (prefix) => {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 };
 
-/**
- * معالجة الأخطاء بشكل موحد
- */
+// handle Errors
 const handleError = (operation, error) => {
   console.error(`Error in ${operation}:`, error);
   throw new Error(`${operation} failed: ${error.message}`);
 };
 
-/**
- * التحقق من وجود المستند
- */
+// check if document exists
 const documentExists = async (collectionName, docId) => {
   const docRef = doc(db, collectionName, docId);
   const docSnap = await getDoc(docRef);
@@ -44,9 +38,7 @@ const documentExists = async (collectionName, docId) => {
 
 /* ================ USERS ================ */
 
-/**
- * إنشاء مستخدم جديد مع validation
- */
+//create new account
 export const createUser = async (id = null, data) => {
   try {
     // Validation
@@ -59,22 +51,20 @@ export const createUser = async (id = null, data) => {
     await setDoc(doc(db, "users", userId), {
       Name: data.name,
       role: data.role,
-      email: data.email.toLowerCase(), // normalize email
+      email: data.email.toLowerCase(),
       courses: data.courses || [],
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
 
-    console.log(`✅ User created: ${userId}`);
+    console.log(`User created: ${userId}`);
     return userId;
   } catch (error) {
     handleError("createUser", error);
   }
 };
 
-/**
- * جلب مستخدم واحد
- */
+// get single user by ID
 export const getUser = async (id) => {
   try {
     const docRef = doc(db, "users", id);
@@ -122,9 +112,7 @@ export const getAllUsers = async (limitCount = 50, lastDoc = null) => {
   }
 };
 
-/**
- * جلب مستخدمين حسب الدور (role)
- */
+// get users by role
 export const getUsersByRole = async (role) => {
   try {
     const q = query(
@@ -139,9 +127,7 @@ export const getUsersByRole = async (role) => {
   }
 };
 
-/**
- * تحديث مستخدم
- */
+// update user
 export const updateUser = async (id, data) => {
   try {
     const exists = await documentExists("users", id);
@@ -158,10 +144,7 @@ export const updateUser = async (id, data) => {
     handleError("updateUser", error);
   }
 };
-
-/**
- * حذف مستخدم
- */
+// delete user
 export const deleteUser = async (id) => {
   try {
     const docRef = doc(db, "users", id);
@@ -174,9 +157,7 @@ export const deleteUser = async (id) => {
 
 /* ================ COURSES ================ */
 
-/**
- * إنشاء كورس جديد
- */
+//create a new course
 export const createCourse = async (id = null, data) => {
   try {
     if (!data.CId || !data.Name || !data.department) {
@@ -200,9 +181,7 @@ export const createCourse = async (id = null, data) => {
   }
 };
 
-/**
- * جلب كورس واحد
- */
+// get single course by ID
 export const getCourse = async (id) => {
   try {
     const docRef = doc(db, "courses", id);
@@ -213,9 +192,7 @@ export const getCourse = async (id) => {
   }
 };
 
-/**
- * جلب كل الكورسات
- */
+// get all courses
 export const getAllCourses = async () => {
   try {
     const colRef = collection(db, "courses");
@@ -226,9 +203,7 @@ export const getAllCourses = async () => {
   }
 };
 
-/**
- * جلب كورسات قسم معين
- */
+// get courses by department
 export const getCoursesByDepartment = async (departmentId) => {
   try {
     const departmentRef = doc(db, "departments", departmentId);
@@ -243,9 +218,7 @@ export const getCoursesByDepartment = async (departmentId) => {
   }
 };
 
-/**
- * تحديث كورس
- */
+// update course
 export const updateCourse = async (id, data) => {
   try {
     const docRef = doc(db, "courses", id);
@@ -259,9 +232,7 @@ export const updateCourse = async (id, data) => {
   }
 };
 
-/**
- * حذف كورس
- */
+// delete course
 export const deleteCourse = async (id) => {
   try {
     const docRef = doc(db, "courses", id);
@@ -274,9 +245,7 @@ export const deleteCourse = async (id) => {
 
 /* ================ DEPARTMENTS ================ */
 
-/**
- * إنشاء قسم جديد
- */
+//create a new department
 export const createDepartment = async (id = null, data) => {
   try {
     if (!data.dName) {
@@ -299,9 +268,7 @@ export const createDepartment = async (id = null, data) => {
   }
 };
 
-/**
- * جلب قسم واحد
- */
+// get single department by ID
 export const getDepartment = async (id) => {
   try {
     const docRef = doc(db, "departments", id);
@@ -312,9 +279,7 @@ export const getDepartment = async (id) => {
   }
 };
 
-/**
- * جلب كل الأقسام
- */
+// get all departments
 export const getAllDepartments = async () => {
   try {
     const colRef = collection(db, "departments");
@@ -325,9 +290,7 @@ export const getAllDepartments = async () => {
   }
 };
 
-/**
- * تحديث قسم
- */
+// update department
 export const updateDepartment = async (id, data) => {
   try {
     const docRef = doc(db, "departments", id);
@@ -341,9 +304,7 @@ export const updateDepartment = async (id, data) => {
   }
 };
 
-/**
- * حذف قسم
- */
+// delete department
 export const deleteDepartment = async (id) => {
   try {
     const docRef = doc(db, "departments", id);
@@ -356,9 +317,7 @@ export const deleteDepartment = async (id) => {
 
 /* ================ ATTENDANCE ================ */
 
-/**
- * تسجيل حضور واحد
- */
+//maark attendance for a student in a course
 export const markAttendance = async (id = null, data) => {
   try {
     if (!data.course || !data.student || !data.status) {
@@ -373,16 +332,14 @@ export const markAttendance = async (id = null, data) => {
       createdAt: serverTimestamp(),
     });
 
-    console.log(`✅ Attendance marked: ${attId}`);
+    console.log(` Attendance marked: ${attId}`);
     return attId;
   } catch (error) {
     handleError("markAttendance", error);
   }
 };
 
-/**
- * تسجيل حضور متعدد (Batch Write) - أسرع بكثير
- */
+//mark bulk attendance
 export const markBulkAttendance = async (attendanceList) => {
   try {
     const batch = writeBatch(db);
@@ -409,9 +366,7 @@ export const markBulkAttendance = async (attendanceList) => {
   }
 };
 
-/**
- * جلب سجل حضور واحد
- */
+// get single attendance by ID
 export const getAttendance = async (id) => {
   try {
     const docRef = doc(db, "attendance", id);
@@ -422,9 +377,7 @@ export const getAttendance = async (id) => {
   }
 };
 
-/**
- * جلب حضور كورس معين
- */
+//get attendance records by course
 export const getCourseAttendance = async (courseId) => {
   try {
     const courseRef = doc(db, "courses", courseId);
@@ -440,9 +393,7 @@ export const getCourseAttendance = async (courseId) => {
   }
 };
 
-/**
- * جلب حضور طالب معين
- */
+// get attendance records by student
 export const getStudentAttendance = async (studentId) => {
   try {
     const studentRef = doc(db, "users", studentId);
@@ -458,9 +409,7 @@ export const getStudentAttendance = async (studentId) => {
   }
 };
 
-/**
- * جلب حضور قسم معين - محسّن
- */
+// get attendance records by department
 export const getDepartmentAttendance = async (departmentId) => {
   try {
     // استخدام Reference بدل ID string
@@ -499,9 +448,7 @@ export const getDepartmentAttendance = async (departmentId) => {
   }
 };
 
-/**
- * تحديث حضور
- */
+// update attendance
 export const updateAttendance = async (id, data) => {
   try {
     const docRef = doc(db, "attendance", id);
@@ -515,9 +462,7 @@ export const updateAttendance = async (id, data) => {
   }
 };
 
-/**
- * حذف حضور
- */
+// delete attendance
 export const deleteAttendance = async (id) => {
   try {
     const docRef = doc(db, "attendance", id);
@@ -530,9 +475,7 @@ export const deleteAttendance = async (id) => {
 
 /* ================ NOTIFICATIONS ================ */
 
-/**
- * إنشاء إشعار جديد
- */
+// create a new notification
 export const createNotification = async (id = null, data) => {
   try {
     if (!data.title || !data.message || !data.user) {
@@ -557,9 +500,7 @@ export const createNotification = async (id = null, data) => {
   }
 };
 
-/**
- * إنشاء إشعارات متعددة (Batch)
- */
+// create bulk notifications
 export const createBulkNotifications = async (notificationsList) => {
   try {
     const batch = writeBatch(db);
@@ -582,16 +523,14 @@ export const createBulkNotifications = async (notificationsList) => {
     }
 
     await batch.commit();
-    console.log(`✅ Bulk notifications created: ${ids.length} records`);
+    console.log(` Bulk notifications created: ${ids.length} records`);
     return ids;
   } catch (error) {
     handleError("createBulkNotifications", error);
   }
 };
 
-/**
- * جلب إشعار واحد
- */
+// get single notification by ID
 export const getNotification = async (id) => {
   try {
     const docRef = doc(db, "notifications", id);
@@ -602,9 +541,7 @@ export const getNotification = async (id) => {
   }
 };
 
-/**
- * جلب إشعارات مستخدم معين
- */
+// get notifications for a user
 export const getNotificationsForUser = async (userId, unreadOnly = false) => {
   try {
     const userRef = doc(db, "users", userId);
@@ -625,9 +562,7 @@ export const getNotificationsForUser = async (userId, unreadOnly = false) => {
   }
 };
 
-/**
- * تحديث إشعار
- */
+//update notification
 export const updateNotification = async (id, data) => {
   try {
     const docRef = doc(db, "notifications", id);
@@ -641,9 +576,7 @@ export const updateNotification = async (id, data) => {
   }
 };
 
-/**
- * تحديث حالة القراءة لإشعارات متعددة
- */
+// mark notifications as read (batch)
 export const markNotificationsAsRead = async (notificationIds) => {
   try {
     const batch = writeBatch(db);
@@ -657,15 +590,13 @@ export const markNotificationsAsRead = async (notificationIds) => {
     }
 
     await batch.commit();
-    console.log(`✅ Marked ${notificationIds.length} notifications as read`);
+    console.log(`Marked ${notificationIds.length} notifications as read`);
   } catch (error) {
     handleError("markNotificationsAsRead", error);
   }
 };
 
-/**
- * حذف إشعار
- */
+//delete notification
 export const deleteNotification = async (id) => {
   try {
     const docRef = doc(db, "notifications", id);
@@ -676,9 +607,7 @@ export const deleteNotification = async (id) => {
   }
 };
 
-/**
- * حذف كل إشعارات مستخدم (Batch Delete)
- */
+// delete all notifications for a user
 export const deleteAllUserNotifications = async (userId) => {
   try {
     const notifications = await getNotificationsForUser(userId);
@@ -691,7 +620,7 @@ export const deleteAllUserNotifications = async (userId) => {
 
     await batch.commit();
     console.log(
-      `✅ Deleted ${notifications.length} notifications for user: ${userId}`
+      `Deleted ${notifications.length} notifications for user: ${userId}`
     );
   } catch (error) {
     handleError("deleteAllUserNotifications", error);
