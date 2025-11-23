@@ -1,4 +1,3 @@
-// firebase-helper.js
 import { db } from "./firebase.js";
 import {
   doc,
@@ -175,7 +174,7 @@ export const createDepartment = async (id, data) => {
       dName: data.dName,
       departmentId: id,
     });
-    console.log(`✅ Department created with ID: ${id}`);
+    console.log(` Department created with ID: ${id}`);
     return id;
   } catch (error) {
     console.error("Error creating department:", error);
@@ -218,7 +217,7 @@ export const updateDepartment = async (id, data) => {
   try {
     const docRef = doc(db, "departments", id);
     await updateDoc(docRef, data);
-    console.log(`✅ Department updated: ${id}`);
+    console.log(` Department updated: ${id}`);
   } catch (error) {
     console.error("Error updating department:", error);
     throw error;
