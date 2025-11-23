@@ -9,98 +9,194 @@ import {
   collection,
   query,
   where,
-  addDoc,
-  getCountFromServer,
+  writeBatch,
+  serverTimestamp,
+  orderBy,
+  limit,
+  startAfter,
 } from "firebase/firestore";
 
-/* ---------------- Users ---------------- */
+/* ================ HELPER FUNCTIONS ================ */
 
 /**
- * إنشاء مستخدم جديد
- * @param {string} id - معرف المستخدم (اختياري، يولد تلقائي لو مش موجود)
- * @param {Object} data - بيانات المستخدم { name, role, email, courses }
+ * إنشاء ID فريد باستخدام timestamp + random
  */
-export const createUser = async (id, data) => {
+const generateId = (prefix) => {
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
+
+/**
+ * معالجة الأخطاء بشكل موحد
+ */
+const handleError = (operation, error) => {
+  console.error(`Error in ${operation}:`, error);
+  throw new Error(`${operation} failed: ${error.message}`);
+};
+
+/**
+ * التحقق من وجود المستند
+ */
+const documentExists = async (collectionName, docId) => {
+  const docRef = doc(db, collectionName, docId);
+  const docSnap = await getDoc(docRef);
+  return docSnap.exists();
+};
+
+/* ================ USERS ================ */
+
+/**
+ * إنشاء مستخدم جديد مع validation
+ */
+export const createUser = async (id = null, data) => {
   try {
-    if (!id) {
-      id = `user_${Date.now()}`;
+    // Validation
+    if (!data.name || !data.email || !data.role) {
+      throw new Error("Missing required fields: name, email, role");
     }
 
-    await setDoc(doc(db, "users", id), {
+    const userId = id || generateId("user");
+
+    await setDoc(doc(db, "users", userId), {
       Name: data.name,
       role: data.role,
-      email: data.email,
+      email: data.email.toLowerCase(), // normalize email
       courses: data.courses || [],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
 
-    console.log(` User created with ID: ${id}`);
-    return id;
+    console.log(`✅ User created: ${userId}`);
+    return userId;
   } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
+    handleError("createUser", error);
   }
 };
 
 /**
- * جلب بيانات مستخدم واحد
- * @param {string} id - معرف المستخدم
- * @returns object أو null
+ * جلب مستخدم واحد
  */
 export const getUser = async (id) => {
-  const docRef = doc(db, "users", id);
-  const docSnap = await getDoc(docRef);
-  return docSnap.exists() ? docSnap.data() : null;
+  try {
+    const docRef = doc(db, "users", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      console.warn(`User not found: ${id}`);
+      return null;
+    }
+
+    return { id: docSnap.id, ...docSnap.data() };
+  } catch (error) {
+    handleError("getUser", error);
+  }
 };
 
 /**
- * جلب كل المستخدمين
- * @returns Array من المستخدمين
+ * جلب كل المستخدمين مع pagination
  */
-export const getAllUsers = async () => {
-  const colRef = collection(db, "users");
-  const snapshot = await getDocs(colRef);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+export const getAllUsers = async (limitCount = 50, lastDoc = null) => {
+  try {
+    let q = query(
+      collection(db, "users"),
+      orderBy("createdAt", "desc"),
+      limit(limitCount)
+    );
+
+    if (lastDoc) {
+      q = query(q, startAfter(lastDoc));
+    }
+
+    const snapshot = await getDocs(q);
+    const users = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return {
+      users,
+      lastVisible: snapshot.docs[snapshot.docs.length - 1],
+      hasMore: snapshot.docs.length === limitCount,
+    };
+  } catch (error) {
+    handleError("getAllUsers", error);
+  }
 };
 
 /**
- * تعديل بيانات مستخدم
- * @param {string} id
- * @param {Object} data - أي حقول لتحديثها
+ * جلب مستخدمين حسب الدور (role)
+ */
+export const getUsersByRole = async (role) => {
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("role", "==", role),
+      orderBy("createdAt", "desc")
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getUsersByRole", error);
+  }
+};
+
+/**
+ * تحديث مستخدم
  */
 export const updateUser = async (id, data) => {
-  const docRef = doc(db, "users", id);
-  await updateDoc(docRef, data);
+  try {
+    const exists = await documentExists("users", id);
+    if (!exists) throw new Error(`User not found: ${id}`);
+
+    const docRef = doc(db, "users", id);
+    await updateDoc(docRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+
+    console.log(`✅ User updated: ${id}`);
+  } catch (error) {
+    handleError("updateUser", error);
+  }
 };
 
 /**
  * حذف مستخدم
- * @param {string} id
  */
 export const deleteUser = async (id) => {
-  const docRef = doc(db, "users", id);
-  await deleteDoc(docRef);
+  try {
+    const docRef = doc(db, "users", id);
+    await deleteDoc(docRef);
+    console.log(`✅ User deleted: ${id}`);
+  } catch (error) {
+    handleError("deleteUser", error);
+  }
 };
 
-/* ---------------- Courses ---------------- */
+/* ================ COURSES ================ */
 
 /**
  * إنشاء كورس جديد
- * @param {string} id - معرف الكورس (اختياري)
- * @param {Object} data - { CId, Name, department: Reference }
  */
-export const createCourse = async (id, data) => {
+export const createCourse = async (id = null, data) => {
   try {
-    if (!id) id = `course_${Date.now()}`;
-    await setDoc(doc(db, "courses", id), {
+    if (!data.CId || !data.Name || !data.department) {
+      throw new Error("Missing required fields: CId, Name, department");
+    }
+
+    const courseId = id || generateId("course");
+
+    await setDoc(doc(db, "courses", courseId), {
       CId: data.CId,
       Name: data.Name,
       department: data.department,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
-    console.log(` Course created with ID: ${id}`);
-    return id;
+
+    console.log(`✅ Course created: ${courseId}`);
+    return courseId;
   } catch (error) {
-    console.error("Error creating course:", error);
-    throw error;
+    handleError("createCourse", error);
   }
 };
 
@@ -113,8 +209,7 @@ export const getCourse = async (id) => {
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
-    console.error("Error getting course:", error);
-    throw error;
+    handleError("getCourse", error);
   }
 };
 
@@ -127,22 +222,40 @@ export const getAllCourses = async () => {
     const snapshot = await getDocs(colRef);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error getting all courses:", error);
-    throw error;
+    handleError("getAllCourses", error);
   }
 };
 
 /**
- * تعديل كورس
+ * جلب كورسات قسم معين
+ */
+export const getCoursesByDepartment = async (departmentId) => {
+  try {
+    const departmentRef = doc(db, "departments", departmentId);
+    const q = query(
+      collection(db, "courses"),
+      where("department", "==", departmentRef)
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getCoursesByDepartment", error);
+  }
+};
+
+/**
+ * تحديث كورس
  */
 export const updateCourse = async (id, data) => {
   try {
     const docRef = doc(db, "courses", id);
-    await updateDoc(docRef, data);
-    console.log(`Course updated: ${id}`);
+    await updateDoc(docRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+    console.log(`✅ Course updated: ${id}`);
   } catch (error) {
-    console.error("Error updating course:", error);
-    throw error;
+    handleError("updateCourse", error);
   }
 };
 
@@ -153,32 +266,36 @@ export const deleteCourse = async (id) => {
   try {
     const docRef = doc(db, "courses", id);
     await deleteDoc(docRef);
-    console.log(` Course deleted: ${id}`);
+    console.log(`✅ Course deleted: ${id}`);
   } catch (error) {
-    console.error("Error deleting course:", error);
-    throw error;
+    handleError("deleteCourse", error);
   }
 };
 
-/* ---------------- Departments ---------------- */
+/* ================ DEPARTMENTS ================ */
 
 /**
  * إنشاء قسم جديد
- * @param {string} id - documentId للقسم (اختياري)
- * @param {Object} data - { dName }
  */
-export const createDepartment = async (id, data) => {
+export const createDepartment = async (id = null, data) => {
   try {
-    if (!id) id = `dept_${Date.now()}`;
-    await setDoc(doc(db, "departments", id), {
+    if (!data.dName) {
+      throw new Error("Missing required field: dName");
+    }
+
+    const deptId = id || generateId("dept");
+
+    await setDoc(doc(db, "departments", deptId), {
       dName: data.dName,
-      departmentId: id,
+      departmentId: deptId,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
-    console.log(` Department created with ID: ${id}`);
-    return id;
+
+    console.log(`✅ Department created: ${deptId}`);
+    return deptId;
   } catch (error) {
-    console.error("Error creating department:", error);
-    throw error;
+    handleError("createDepartment", error);
   }
 };
 
@@ -191,8 +308,7 @@ export const getDepartment = async (id) => {
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
-    console.error("Error getting department:", error);
-    throw error;
+    handleError("getDepartment", error);
   }
 };
 
@@ -205,22 +321,23 @@ export const getAllDepartments = async () => {
     const snapshot = await getDocs(colRef);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error getting all departments:", error);
-    throw error;
+    handleError("getAllDepartments", error);
   }
 };
 
 /**
- * تعديل قسم
+ * تحديث قسم
  */
 export const updateDepartment = async (id, data) => {
   try {
     const docRef = doc(db, "departments", id);
-    await updateDoc(docRef, data);
-    console.log(` Department updated: ${id}`);
+    await updateDoc(docRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+    console.log(`✅ Department updated: ${id}`);
   } catch (error) {
-    console.error("Error updating department:", error);
-    throw error;
+    handleError("updateDepartment", error);
   }
 };
 
@@ -231,29 +348,64 @@ export const deleteDepartment = async (id) => {
   try {
     const docRef = doc(db, "departments", id);
     await deleteDoc(docRef);
-    console.log(`Department deleted: ${id}`);
+    console.log(`✅ Department deleted: ${id}`);
   } catch (error) {
-    console.error("Error deleting department:", error);
-    throw error;
+    handleError("deleteDepartment", error);
   }
 };
 
-/* ---------------- Attendance ---------------- */
+/* ================ ATTENDANCE ================ */
 
 /**
- * تسجيل حضور أو غياب
- * @param {string} id - documentId للحضور (اختياري)
- * @param {Object} data - { course: Reference, date: Timestamp, student: Reference, status: "present"|"absent" }
+ * تسجيل حضور واحد
  */
-export const markAttendance = async (id, data) => {
+export const markAttendance = async (id = null, data) => {
   try {
-    if (!id) id = `att_${Date.now()}`;
-    await setDoc(doc(db, "attendance", id), data);
-    console.log(`Attendance recorded with ID: ${id}`);
-    return id;
+    if (!data.course || !data.student || !data.status) {
+      throw new Error("Missing required fields: course, student, status");
+    }
+
+    const attId = id || generateId("att");
+
+    await setDoc(doc(db, "attendance", attId), {
+      ...data,
+      date: data.date || serverTimestamp(),
+      createdAt: serverTimestamp(),
+    });
+
+    console.log(`✅ Attendance marked: ${attId}`);
+    return attId;
   } catch (error) {
-    console.error("Error marking attendance:", error);
-    throw error;
+    handleError("markAttendance", error);
+  }
+};
+
+/**
+ * تسجيل حضور متعدد (Batch Write) - أسرع بكثير
+ */
+export const markBulkAttendance = async (attendanceList) => {
+  try {
+    const batch = writeBatch(db);
+    const ids = [];
+
+    for (const data of attendanceList) {
+      const attId = generateId("att");
+      const docRef = doc(db, "attendance", attId);
+
+      batch.set(docRef, {
+        ...data,
+        date: data.date || serverTimestamp(),
+        createdAt: serverTimestamp(),
+      });
+
+      ids.push(attId);
+    }
+
+    await batch.commit();
+    console.log(`✅ Bulk attendance marked: ${ids.length} records`);
+    return ids;
+  } catch (error) {
+    handleError("markBulkAttendance", error);
   }
 };
 
@@ -266,94 +418,25 @@ export const getAttendance = async (id) => {
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
-    console.error("Error getting attendance:", error);
-    throw error;
+    handleError("getAttendance", error);
   }
 };
 
 /**
- * جلب كل الحضور
- */
-export const getAllAttendance = async () => {
-  try {
-    const colRef = collection(db, "attendance");
-    const snapshot = await getDocs(colRef);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    console.error("Error getting all attendance:", error);
-    throw error;
-  }
-};
-
-/**
- * تعديل سجل حضور
- */
-export const updateAttendance = async (id, data) => {
-  try {
-    const docRef = doc(db, "attendance", id);
-    await updateDoc(docRef, data);
-    console.log(` Attendance updated: ${id}`);
-  } catch (error) {
-    console.error("Error updating attendance:", error);
-    throw error;
-  }
-};
-
-/**
- * حذف سجل حضور
- */
-export const deleteAttendance = async (id) => {
-  try {
-    const docRef = doc(db, "attendance", id);
-    await deleteDoc(docRef);
-    console.log(` Attendance deleted: ${id}`);
-  } catch (error) {
-    console.error("Error deleting attendance:", error);
-    throw error;
-  }
-};
-
-/**
- * جلب حضور كل الطلاب لقسم معين
- * @param {string} departmentId
- */
-export const getDepartmentAttendance = async (departmentId) => {
-  try {
-    // 1. جلب كل الكورسات التابعة للقسم
-    const coursesSnapshot = await getDocs(collection(db, "courses"));
-    const courseRefs = coursesSnapshot.docs
-      .filter((doc) => doc.data().department.id === departmentId)
-      .map((doc) => doc.ref);
-
-    if (courseRefs.length === 0) return [];
-
-    // 2. جلب كل attendance اللي الكورس بتاعها في courseRefs
-    const attendanceSnapshot = await getDocs(collection(db, "attendance"));
-    const filtered = attendanceSnapshot.docs.filter((att) =>
-      courseRefs.some((cr) => cr.id === att.data().course.id)
-    );
-
-    return filtered.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    console.error("Error getting department attendance:", error);
-    throw error;
-  }
-};
-
-/**
- * جلب حضور كل الطلاب لكورس معين
+ * جلب حضور كورس معين
  */
 export const getCourseAttendance = async (courseId) => {
   try {
+    const courseRef = doc(db, "courses", courseId);
     const q = query(
       collection(db, "attendance"),
-      where("course.id", "==", courseId)
+      where("course", "==", courseRef),
+      orderBy("date", "desc")
     );
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error getting course attendance:", error);
-    throw error;
+    handleError("getCourseAttendance", error);
   }
 };
 
@@ -362,39 +445,152 @@ export const getCourseAttendance = async (courseId) => {
  */
 export const getStudentAttendance = async (studentId) => {
   try {
+    const studentRef = doc(db, "users", studentId);
     const q = query(
       collection(db, "attendance"),
-      where("student.id", "==", studentId)
+      where("student", "==", studentRef),
+      orderBy("date", "desc")
     );
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error getting student attendance:", error);
-    throw error;
+    handleError("getStudentAttendance", error);
   }
 };
 
-/* ---------------- Notifications ---------------- */
-
 /**
- * إنشاء Notification جديد
- * @param {string} id - documentId للتنبيه (اختياري)
- * @param {Object} data - { title, message, user: Reference, date, read }
+ * جلب حضور قسم معين - محسّن
  */
-export const createNotification = async (id, data) => {
+export const getDepartmentAttendance = async (departmentId) => {
   try {
-    if (!id) id = `notif_${Date.now()}`;
-    await setDoc(doc(db, "notifications", id), data);
-    console.log(`Notification created with ID: ${id}`);
-    return id;
+    // استخدام Reference بدل ID string
+    const departmentRef = doc(db, "departments", departmentId);
+
+    // جلب الكورسات فقط بدون كل البيانات
+    const coursesQuery = query(
+      collection(db, "courses"),
+      where("department", "==", departmentRef)
+    );
+    const coursesSnapshot = await getDocs(coursesQuery);
+    const courseRefs = coursesSnapshot.docs.map((doc) => doc.ref);
+
+    if (courseRefs.length === 0) return [];
+
+    // استخدام where with 'in' بدلاً من filter
+    // ملحوظة: Firestore تدعم max 10 items في 'in' query
+    const attendancePromises = [];
+    for (let i = 0; i < courseRefs.length; i += 10) {
+      const batch = courseRefs.slice(i, i + 10);
+      const q = query(
+        collection(db, "attendance"),
+        where("course", "in", batch)
+      );
+      attendancePromises.push(getDocs(q));
+    }
+
+    const results = await Promise.all(attendancePromises);
+    const allDocs = results.flatMap((snapshot) =>
+      snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    );
+
+    return allDocs;
   } catch (error) {
-    console.error("Error creating notification:", error);
-    throw error;
+    handleError("getDepartmentAttendance", error);
   }
 };
 
 /**
- * جلب Notification واحد
+ * تحديث حضور
+ */
+export const updateAttendance = async (id, data) => {
+  try {
+    const docRef = doc(db, "attendance", id);
+    await updateDoc(docRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+    console.log(`✅ Attendance updated: ${id}`);
+  } catch (error) {
+    handleError("updateAttendance", error);
+  }
+};
+
+/**
+ * حذف حضور
+ */
+export const deleteAttendance = async (id) => {
+  try {
+    const docRef = doc(db, "attendance", id);
+    await deleteDoc(docRef);
+    console.log(`✅ Attendance deleted: ${id}`);
+  } catch (error) {
+    handleError("deleteAttendance", error);
+  }
+};
+
+/* ================ NOTIFICATIONS ================ */
+
+/**
+ * إنشاء إشعار جديد
+ */
+export const createNotification = async (id = null, data) => {
+  try {
+    if (!data.title || !data.message || !data.user) {
+      throw new Error("Missing required fields: title, message, user");
+    }
+
+    const notifId = id || generateId("notif");
+
+    await setDoc(doc(db, "notifications", notifId), {
+      title: data.title,
+      message: data.message,
+      user: data.user,
+      read: data.read || false,
+      date: data.date || serverTimestamp(),
+      createdAt: serverTimestamp(),
+    });
+
+    console.log(`✅ Notification created: ${notifId}`);
+    return notifId;
+  } catch (error) {
+    handleError("createNotification", error);
+  }
+};
+
+/**
+ * إنشاء إشعارات متعددة (Batch)
+ */
+export const createBulkNotifications = async (notificationsList) => {
+  try {
+    const batch = writeBatch(db);
+    const ids = [];
+
+    for (const data of notificationsList) {
+      const notifId = generateId("notif");
+      const docRef = doc(db, "notifications", notifId);
+
+      batch.set(docRef, {
+        title: data.title,
+        message: data.message,
+        user: data.user,
+        read: false,
+        date: serverTimestamp(),
+        createdAt: serverTimestamp(),
+      });
+
+      ids.push(notifId);
+    }
+
+    await batch.commit();
+    console.log(`✅ Bulk notifications created: ${ids.length} records`);
+    return ids;
+  } catch (error) {
+    handleError("createBulkNotifications", error);
+  }
+};
+
+/**
+ * جلب إشعار واحد
  */
 export const getNotification = async (id) => {
   try {
@@ -402,67 +598,102 @@ export const getNotification = async (id) => {
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
-    console.error("Error getting notification:", error);
-    throw error;
+    handleError("getNotification", error);
   }
 };
 
 /**
- * جلب كل Notifications
+ * جلب إشعارات مستخدم معين
  */
-export const getAllNotifications = async () => {
+export const getNotificationsForUser = async (userId, unreadOnly = false) => {
   try {
-    const colRef = collection(db, "notifications");
-    const snapshot = await getDocs(colRef);
+    const userRef = doc(db, "users", userId);
+    let q = query(
+      collection(db, "notifications"),
+      where("user", "==", userRef),
+      orderBy("date", "desc")
+    );
+
+    if (unreadOnly) {
+      q = query(q, where("read", "==", false));
+    }
+
+    const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error getting all notifications:", error);
-    throw error;
+    handleError("getNotificationsForUser", error);
   }
 };
 
 /**
- * تعديل Notification
+ * تحديث إشعار
  */
 export const updateNotification = async (id, data) => {
   try {
     const docRef = doc(db, "notifications", id);
-    await updateDoc(docRef, data);
-    console.log(`Notification updated: ${id}`);
+    await updateDoc(docRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+    console.log(`✅ Notification updated: ${id}`);
   } catch (error) {
-    console.error("Error updating notification:", error);
-    throw error;
+    handleError("updateNotification", error);
   }
 };
 
 /**
- * حذف Notification
+ * تحديث حالة القراءة لإشعارات متعددة
+ */
+export const markNotificationsAsRead = async (notificationIds) => {
+  try {
+    const batch = writeBatch(db);
+
+    for (const id of notificationIds) {
+      const docRef = doc(db, "notifications", id);
+      batch.update(docRef, {
+        read: true,
+        updatedAt: serverTimestamp(),
+      });
+    }
+
+    await batch.commit();
+    console.log(`✅ Marked ${notificationIds.length} notifications as read`);
+  } catch (error) {
+    handleError("markNotificationsAsRead", error);
+  }
+};
+
+/**
+ * حذف إشعار
  */
 export const deleteNotification = async (id) => {
   try {
     const docRef = doc(db, "notifications", id);
     await deleteDoc(docRef);
-    console.log(`Notification deleted: ${id}`);
+    console.log(`✅ Notification deleted: ${id}`);
   } catch (error) {
-    console.error("Error deleting notification:", error);
-    throw error;
+    handleError("deleteNotification", error);
   }
 };
 
 /**
- * جلب كل Notifications لمستخدم معين
- * @param {string} userId - documentId للمستخدم
+ * حذف كل إشعارات مستخدم (Batch Delete)
  */
-export const getNotificationsForUser = async (userId) => {
+export const deleteAllUserNotifications = async (userId) => {
   try {
-    const q = query(
-      collection(db, "notifications"),
-      where("user.id", "==", userId)
+    const notifications = await getNotificationsForUser(userId);
+    const batch = writeBatch(db);
+
+    for (const notif of notifications) {
+      const docRef = doc(db, "notifications", notif.id);
+      batch.delete(docRef);
+    }
+
+    await batch.commit();
+    console.log(
+      `✅ Deleted ${notifications.length} notifications for user: ${userId}`
     );
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error getting notifications for user:", error);
-    throw error;
+    handleError("deleteAllUserNotifications", error);
   }
 };
