@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ANALYZE
         </h3>
         <a
-            href="#"
+            href="../../Pages/student/dashboard.html"
             class="flex items-center gap-3 text-[#001334] py-2 font-semibold transition-all duration-300"
         >
             <i class="fa-solid fa-chart-pie"></i>
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </h3>
 
         <a
-            href="#"
+            href="../../Pages/student/notification.html"
             class="flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
         >
             <i class="fa-regular fa-user"></i>
