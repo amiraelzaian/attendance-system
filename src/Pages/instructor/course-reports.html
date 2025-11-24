@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Reports</title>
 
     <!-- Fontawesome -->
     <link
@@ -16,23 +17,8 @@
     <script type="module" src="../../JS/main.js" defer></script>
     <script defer type="module" src="../../JS/componentsJS/header.js"></script>
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
-
-    <!-- STUDENT DASHBOARD JS -->
-    <script
-      defer
-      type="module"
-      src="../../JS/modules/student.js/dashboard.js"
-    ></script>
-
-    <!-- INSTRUCTOR DASHBOARD JS -->
-    <script
-      defer
-      type="module"
-      src="../../JS/modules/instructor/instructorDashboard.js"
-    ></script>
-
-    <title>Attendance-System</title>
   </head>
+
   <body>
     <!-- Overlay for menue bar -->
     <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
@@ -45,14 +31,16 @@
 
       <!-- Dashboard Content -->
       <section class="col-span-5 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto">
-        <!-- Title -->
-        <div class="mb-8">
-          <h1 class="text-2xl text-[#012970] font-semibold">Dashboard</h1>
-          <p class="text-sm text-gray-500">Home / Dashboard</p>
-        </div>
+        <h1 class="text-3xl font-bold text-[#012970] mb-6">Course Reports</h1>
 
-        <!-- Call dashboard -->
-        <div id="dashboardContent"></div>
+        <div class="bg-white p-6 shadow rounded-xl">
+          <p class="text-gray-500">Select course to view report:</p>
+
+          <select class="border p-2 rounded mt-3">
+            <option>Web Development</option>
+            <option>Database Systems</option>
+          </select>
+        </div>
       </section>
     </main>
   </body>
