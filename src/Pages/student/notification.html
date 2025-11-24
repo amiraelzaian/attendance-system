@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-gray-50">
+<html lang="en"">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,27 +21,27 @@
     ></script>
     <script defer type="module" src="../../JS/componentsJS/header.js"></script>
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+
     <title>Attendance-System</title>
   </head>
 
-  <body>
+  <body">
     <!-- Header -->
     <div id="header"></div>
 
-    <main class="px-6 grid grid-cols-5 gap-6">
-      <!-- Sidebar -->
+    <!-- MAIN LAYOUT (same as dashboard) -->
+    <main class="h-dvh grid grid-cols-5">
+      <!-- Sidebar (DON'T TOUCH CONTENT) -->
       <div id="sidebar"></div>
 
       <!-- Main Content -->
-      <div
-        class="col-span-5 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto"
-      >
+      <div class="col-span-5 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto">
         <!-- Profile Card -->
         <section
           class="bg-white shadow rounded-lg p-6 flex flex-col md:flex-row md:items-center gap-6"
         >
           <img
-            src="https://via.placeholder.com/120"
+            src="../../../public/images/user-image.webp"
             alt="Student Avatar"
             class="w-28 h-28 rounded-full object-cover"
           />
@@ -57,7 +57,7 @@
         </section>
 
         <!-- Attendance Summary -->
-        <section class="bg-white shadow rounded-lg p-6">
+        <section class="bg-white shadow rounded-lg p-6 mt-6">
           <h3 class="text-xl font-semibold mb-4">Attendance Summary</h3>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-blue-50 text-blue-700 p-4 rounded-lg text-center">
@@ -82,7 +82,7 @@
         </section>
 
         <!-- Notifications -->
-        <section class="bg-white shadow rounded-lg p-6">
+        <section class="bg-white shadow rounded-lg p-6 mt-6">
           <h3 class="text-xl font-semibold mb-4">Notifications</h3>
           <ul class="space-y-3">
             <li class="border-l-4 border-blue-600 bg-blue-50 p-3 rounded-md">
@@ -112,7 +112,7 @@
         </section>
 
         <!-- Courses -->
-        <section class="bg-white shadow rounded-lg p-6">
+        <section class="bg-white shadow rounded-lg p-6 mt-6 mb-20">
           <h3 class="text-xl font-semibold mb-4">Enrolled Courses</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div
@@ -121,6 +121,7 @@
               <p class="font-bold">Web Development</p>
               <p class="text-gray-500 text-sm">Instructor: Alice Smith</p>
             </div>
+
             <div
               class="bg-gray-50 p-4 rounded-lg shadow hover:shadow-md transition"
             >
@@ -131,5 +132,4 @@
         </section>
       </div>
     </main>
-  </body>
-</html>
+  </b
