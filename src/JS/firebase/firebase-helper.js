@@ -139,7 +139,7 @@ export const updateUser = async (id, data) => {
       updatedAt: serverTimestamp(),
     });
 
-    console.log(`✅ User updated: ${id}`);
+    console.log(` User updated: ${id}`);
   } catch (error) {
     handleError("updateUser", error);
   }
@@ -149,7 +149,7 @@ export const deleteUser = async (id) => {
   try {
     const docRef = doc(db, "users", id);
     await deleteDoc(docRef);
-    console.log(`✅ User deleted: ${id}`);
+    console.log(` User deleted: ${id}`);
   } catch (error) {
     handleError("deleteUser", error);
   }
@@ -174,7 +174,7 @@ export const createCourse = async (id = null, data) => {
       updatedAt: serverTimestamp(),
     });
 
-    console.log(`✅ Course created: ${courseId}`);
+    console.log(` Course created: ${courseId}`);
     return courseId;
   } catch (error) {
     handleError("createCourse", error);
@@ -226,7 +226,7 @@ export const updateCourse = async (id, data) => {
       ...data,
       updatedAt: serverTimestamp(),
     });
-    console.log(`✅ Course updated: ${id}`);
+    console.log(` Course updated: ${id}`);
   } catch (error) {
     handleError("updateCourse", error);
   }
@@ -237,7 +237,7 @@ export const deleteCourse = async (id) => {
   try {
     const docRef = doc(db, "courses", id);
     await deleteDoc(docRef);
-    console.log(`✅ Course deleted: ${id}`);
+    console.log(` Course deleted: ${id}`);
   } catch (error) {
     handleError("deleteCourse", error);
   }
@@ -261,7 +261,7 @@ export const createDepartment = async (id = null, data) => {
       updatedAt: serverTimestamp(),
     });
 
-    console.log(`✅ Department created: ${deptId}`);
+    console.log(` Department created: ${deptId}`);
     return deptId;
   } catch (error) {
     handleError("createDepartment", error);
@@ -298,7 +298,7 @@ export const updateDepartment = async (id, data) => {
       ...data,
       updatedAt: serverTimestamp(),
     });
-    console.log(`✅ Department updated: ${id}`);
+    console.log(` Department updated: ${id}`);
   } catch (error) {
     handleError("updateDepartment", error);
   }
@@ -309,7 +309,7 @@ export const deleteDepartment = async (id) => {
   try {
     const docRef = doc(db, "departments", id);
     await deleteDoc(docRef);
-    console.log(`✅ Department deleted: ${id}`);
+    console.log(` Department deleted: ${id}`);
   } catch (error) {
     handleError("deleteDepartment", error);
   }
@@ -359,7 +359,7 @@ export const markBulkAttendance = async (attendanceList) => {
     }
 
     await batch.commit();
-    console.log(`✅ Bulk attendance marked: ${ids.length} records`);
+    console.log(` Bulk attendance marked: ${ids.length} records`);
     return ids;
   } catch (error) {
     handleError("markBulkAttendance", error);
@@ -456,7 +456,7 @@ export const updateAttendance = async (id, data) => {
       ...data,
       updatedAt: serverTimestamp(),
     });
-    console.log(`✅ Attendance updated: ${id}`);
+    console.log(`Attendance updated: ${id}`);
   } catch (error) {
     handleError("updateAttendance", error);
   }
@@ -467,7 +467,7 @@ export const deleteAttendance = async (id) => {
   try {
     const docRef = doc(db, "attendance", id);
     await deleteDoc(docRef);
-    console.log(`✅ Attendance deleted: ${id}`);
+    console.log(` Attendance deleted: ${id}`);
   } catch (error) {
     handleError("deleteAttendance", error);
   }
@@ -493,7 +493,7 @@ export const createNotification = async (id = null, data) => {
       createdAt: serverTimestamp(),
     });
 
-    console.log(`✅ Notification created: ${notifId}`);
+    console.log(` Notification created: ${notifId}`);
     return notifId;
   } catch (error) {
     handleError("createNotification", error);
@@ -570,7 +570,7 @@ export const updateNotification = async (id, data) => {
       ...data,
       updatedAt: serverTimestamp(),
     });
-    console.log(`✅ Notification updated: ${id}`);
+    console.log(` Notification updated: ${id}`);
   } catch (error) {
     handleError("updateNotification", error);
   }
@@ -601,7 +601,7 @@ export const deleteNotification = async (id) => {
   try {
     const docRef = doc(db, "notifications", id);
     await deleteDoc(docRef);
-    console.log(`✅ Notification deleted: ${id}`);
+    console.log(` Notification deleted: ${id}`);
   } catch (error) {
     handleError("deleteNotification", error);
   }
