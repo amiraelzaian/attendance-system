@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (sidebarEl) {
     sidebarEl.innerHTML = `
-    <section
-    class="hidden lg:block col-span-0 lg:col-span-1 bg-white shadow-[2px_0_10px_rgba(0,0,0,0.05)] px-6 py-8"
+    <aside
+    class="hidden lg:block col-span-0 lg:col-span-1 bg-white px-6 py-8"
     >
     <nav class="flex flex-col gap-6">
         <div>
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
             TRACK
         </h3>
         <a
-            href="#"
+            href="../../Pages/student/attendace.html"
             class="flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
         >
             <i class="fa-solid fa-table-list"></i>
@@ -55,8 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Logout
         </a>
     </nav>
-    </section>
-
+    </aside>
   `;
   }
 });

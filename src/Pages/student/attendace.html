@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Fontawesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- JavaScript files -->
+    <script type="module" src="../../JS/main.js" defer></script>
+    <script
+      defer
+      type="module"
+      src="../../JS/modules/student.js/dashboard.js"
+    ></script>
+    <script defer type="module" src="../../JS/componentsJS/header.js"></script>
+    <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+
+    <title>Attendance-System</title>
+  </head>
+  <body class="">
+    <!-- Header -->
+    <div id="header"></div>
+    <div class="h-dvh grid grid-cols-5">
+      <!-- Sidebar -->
+      <div id="sidebar"></div>
+
+      <!-- Main content -->
+      <main class="col-span-5 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-start mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-slate-900">Attendance Sheet</h1>
+            <p class="text-sm text-gray-500 mt-1">Home / Attendance</p>
+          </div>
+        </header>
+
+        <!-- Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-white p-5 rounded-xl shadow border border-gray-100">
+            <small class="text-gray-500">Present | Today</small>
+            <div class="text-2xl font-bold mt-2" id="presentToday">145</div>
+            <div class="text-green-600 text-sm mt-1">▲ 12% increase</div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl shadow border border-gray-100">
+            <small class="text-gray-500">Absent | Today</small>
+            <div class="text-2xl font-bold mt-2" id="absentToday">12</div>
+            <div class="text-red-600 text-sm mt-1">▼ 3% decrease</div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl shadow border border-gray-100">
+            <small class="text-gray-500">Attendance | This Month</small>
+            <div class="text-2xl font-bold mt-2" id="monthPercent">92%</div>
+            <div class="text-green-600 text-sm mt-1">▲ 5% better</div>
+          </div>
+        </section>
+
+        <!-- Chart & Courses -->
+        <section class="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-4">
+          <!-- Chart -->
+          <div class="bg-white p-5 rounded-xl shadow">
+            <h3 class="text-slate-900 font-semibold mb-3">
+              Reports | Last 7 Days
+            </h3>
+            <canvas id="lineChart" class="w-full max-h-[320px]"></canvas>
+          </div>
+
+          <aside class="bg-white p-5 rounded-xl shadow">
+            <h3 class="text-slate-900 font-semibold mb-3">
+              Courses Attendance
+            </h3>
+            <div id="coursesList" class="divide-y divide-gray-100">
+              <div class="flex justify-between py-2 font-semibold">
+                <span>Mathematics 101</span>
+                <span>5 / 7 (71%)</span>
+              </div>
+              <div class="flex justify-between py-2 font-semibold">
+                <span>Physics 201</span>
+                <span>6 / 7 (86%)</span>
+              </div>
+              <div class="flex justify-between py-2 font-semibold">
+                <span>Chemistry 120</span>
+                <span>7 / 7 (100%)</span>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <!-- Full Table -->
+        <section class="bg-white p-5 rounded-xl shadow mt-6 overflow-auto">
+          <h3 class="text-slate-900 font-semibold mb-3">
+            Detailed Attendance Records
+          </h3>
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="text-gray-500">
+                <th class="py-2 text-left">Date</th>
+                <th class="py-2 text-left">Course</th>
+                <th class="py-2 text-left">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr>
+                <td class="py-3">2025-11-24 09:00</td>
+                <td class="py-3">Mathematics 101</td>
+                <td class="py-3 text-green-600 font-semibold">Present</td>
+              </tr>
+              <tr>
+                <td class="py-3">2025-11-23 11:00</td>
+                <td class="py-3">Physics 201</td>
+                <td class="py-3 text-red-600 font-semibold">Absent</td>
+              </tr>
+              <tr>
+                <td class="py-3">2025-11-22 08:00</td>
+                <td class="py-3">Chemistry 120</td>
+                <td class="py-3 text-green-600 font-semibold">Present</td>
+              </tr>
+              <tr>
+                <td class="py-3">2025-11-21 10:00</td>
+                <td class="py-3">Mathematics 101</td>
+                <td class="py-3 text-green-600 font-semibold">Present</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
