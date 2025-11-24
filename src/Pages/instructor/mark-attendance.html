@@ -19,18 +19,20 @@
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
   </head>
 
-  <body>
+  <body class="overflow-x-hidden">
     <!-- Overlay for menue bar -->
     <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
     <!-- Header -->
     <div id="header"></div>
 
-    <main class="h-dvh grid grid-cols-5">
+    <main class="h-dvh grid grid-cols-1 lg:grid-cols-5">
       <!-- Sidebar -->
       <div id="sidebar"></div>
 
       <!-- Dashboard Content -->
-      <section class="col-span-5 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto">
+      <section
+        class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
+      >
         <h1 class="text-3xl font-bold text-[#012970] mb-6">Mark Attendance</h1>
 
         <table class="w-full bg-white shadow rounded-xl overflow-hidden">
