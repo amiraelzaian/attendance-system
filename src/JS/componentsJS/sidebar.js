@@ -1,6 +1,6 @@
+import {activeCurrentPage} from "./header";
 document.addEventListener("DOMContentLoaded", () => {
   const sidebarEl = document.querySelector("#sidebar");
-
   if (sidebarEl) {
     sidebarEl.innerHTML = `
     <aside
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </h3>
         <a
             href="../../Pages/student/attendace.html"
-            class="flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
+            class="attendace-btn flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
         >
             <i class="fa-solid fa-table-list"></i>
             Attendance Sheet
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </h3>
         <a
             href="../../Pages/student/dashboard.html"
-            class="flex items-center gap-3 text-[#001334] py-2 font-semibold transition-all duration-300"
+            class="dashboard-btn flex items-center gap-3 text-[#012970] hover:text-[#001334] py-2 transition-all duration-300"
         >
             <i class="fa-solid fa-chart-pie"></i>
             Dashboard
@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         </h3>
 
         <a
-            href="../../Pages/student/notification.html"
-            class="flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
+            href="../../Pages/student/studentProfile.html"
+            class="studentProfile-btn flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
         >
             <i class="fa-regular fa-user"></i>
             Student
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
 
         <a
-        href="#"
+        href="../../../index.html"
         class="flex items-center gap-3 text-red-600 py-2 hover:text-red-900 transition-all duration-300"
         >
         <i class="fa-solid fa-right-from-bracket"></i>
@@ -57,5 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     </nav>
     </aside>
   `;
+  activeCurrentPage();
   }
 });
