@@ -60,10 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <i class="fa-solid fa-clipboard-check"></i> Mark Attendance
         </a>
 
-        <a href="../../Pages/instructor/edit-attendance.html" class="flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334]">
-          <i class="fa-solid fa-pen-to-square"></i> Edit Attendance
-        </a>
-
         <a href="../../Pages/instructor/course-reports.html" class="flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334]">
           <i class="fa-solid fa-chart-pie"></i> Course Reports
         </a>
