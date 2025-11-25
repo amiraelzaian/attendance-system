@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <header
     class="w-full bg-[#FFFFFF] h-16 px-8 py-4 flex items-center justify-between shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
   >
-    <a href="#" class="text-xl text-[#012970] font-semibold italic">Attendify</a>
+    <a href="#" class="text-xl text-primary font-semibold italic">Attendify</a>
     <!-- Header icons -->
     <div class="icons-sec flex items-center gap-4">
       <a href="../../Pages/student/notification.html" class="notification-btn"><i class="fa-regular fa-bell text-lg"></i></a>
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
           alt="userImage"
           class="w-6 rounded-full"
         />
-        <h4 class="text-[#012970]">Batoul</h4>
+        <h4 class="text-primary">Batoul</h4>
       </a>
       <button id="menu-btn" class="lg:hidden">
         <i class="fa-solid fa-bars text-lg"></i>
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             class="w-8 rounded-full"
           />
           <h4
-            class="text-[#012970] hover:text-[#001334] transition-all duration-300"
+            class="text-primary hover:text-[#001334] transition-all duration-300"
           >
             Batoul
           </h4>
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </h3>
         <a
           href="../../Pages/student/attendace.html"
-          class="attendace-btn flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
+          class="attendace-btn flex items-center gap-3 text-primary py-2 hover:text-[#001334] transition-all duration-300"
         >
           <i class="fa-solid fa-table-list"></i>
           Attendance Sheet
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </h3>
         <a
           href="../../Pages/student/dashboard.html"
-          class="dashboard-btn flex items-center gap-3 text-[#012970] hover:text-[#001334] py-2 transition-all duration-300"
+          class="dashboard-btn flex items-center gap-3 text-primary hover:text-[#001334] py-2 transition-all duration-300"
         >
           <i class="fa-solid fa-chart-pie"></i>
           Dashboard
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <a
           href="../../Pages/student/studentProfile.html" 
-          class="studentProfile-btn flex items-center gap-3 text-[#012970] py-2 hover:text-[#001334] transition-all duration-300"
+          class="studentProfile-btn flex items-center gap-3 text-primary py-2 hover:text-[#001334] transition-all duration-300"
         >
           <i class="fa-regular fa-user"></i>
           Student
