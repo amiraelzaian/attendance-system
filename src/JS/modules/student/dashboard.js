@@ -1,13 +1,20 @@
 // Implement chart js
 import Chart from "chart.js/auto";
 
-localStorage.setItem("role", "instructor");
+// localStorage.setItem("role", "instructor"); // ❌ امسحي السطر ده!
+
 // check if is a student
 document.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("role") !== "student") return;
+  const role = localStorage.getItem("role");
+  console.log("Current role:", role); // للتأكد من الـ role
+
+  if (role !== "student") {
+    console.log("Not a student, showing instructor dashboard");
+    return;
+  }
 
   document.querySelector("#dashboardContent").innerHTML = `
-<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="bg-white p-5 rounded-xl shadow border border-gray-100">
         <small class="text-gray-500">Present | Today</small>
         <div class="text-2xl font-bold mt-2" id="presentToday">145</div>

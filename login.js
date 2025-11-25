@@ -15,6 +15,7 @@ loginForm.addEventListener("submit", async (e) => {
 
     const userData = await getUser(user.uid);
     console.log("Fetched user data:", userData);
+    localStorage.setItem("userId", user.uid);
 
     if (!userData) {
       alert("User data not found in database.");
