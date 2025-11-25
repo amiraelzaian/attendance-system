@@ -8,6 +8,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   const email = loginForm["email"].value;
   const password = loginForm["password"].value;
+  const role = loginForm["role"].value;
 
   try {
     const user = await signIn(email, password);
@@ -20,6 +21,13 @@ loginForm.addEventListener("submit", async (e) => {
       alert("User data not found in database.");
       return;
     }
+    if (!role) {
+      alert("Please choose your role!");
+      return;
+    }
+
+    // Save role for later use
+    localStorage.setItem("role", role);
 
     window.location.href = "./src/Pages/student/dashboard.html";
     loginForm.reset();

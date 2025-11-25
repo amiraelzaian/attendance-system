@@ -1,10 +1,10 @@
 // Implement chart js
 import Chart from "chart.js/auto";
 
-localStorage.setItem("role", "instructor");
 // check if is a student
 document.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("role") !== "student") return;
+  const role = localStorage.getItem("role");
+  if (role !== "student") return;
 
   document.querySelector("#dashboardContent").innerHTML = `
 <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
