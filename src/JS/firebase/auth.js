@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-
+import { getUser } from "./firebase-helper.js";
 // Firebase Auth Functions
 // sign up
 export const signUp = async (email, password) => {

@@ -66,6 +66,7 @@ export const createUser = async (id = null, data) => {
 
 // get single user by ID
 export const getUser = async (id) => {
+  console.log("Fetching user with ID:", id);
   try {
     const docRef = doc(db, "users", id);
     const docSnap = await getDoc(docRef);
