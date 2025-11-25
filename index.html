@@ -12,6 +12,7 @@
     />
 
     <!-- JavaScript files -->
+    <script type="module" src="./login.js" defer></script>
     <script type="module" src="./src/JS/main.js" defer></script>
     <script type="module" defer src="./src/JS/componentsJS/header.js"></script>
 
@@ -42,35 +43,52 @@
       </div>
 
       <!-- Right Section -->
-      <div class="">
+      <form class="login-form">
         <div class="w-fit bg-white shadow p-10">
           <!-- Toggle Buttons -->
           <div class="mb-6">
             <div class="flex gap-4">
               <!-- Teacher -->
               <label class="flex items-center gap-1 cursor-pointer">
-                <input type="radio" class="size-3 md:size-4 accent-blue-600" />
+                <input
+                  type="radio"
+                  class="size-3 md:size-4 accent-blue-600"
+                  value="teacher"
+                  name="role"
+                />
                 <span class="text-gray-700">Teacher</span>
               </label>
 
               <!-- Admin -->
               <label class="flex items-center gap-1 cursor-pointer">
-                <input type="radio" class="size-3 md:size-4 accent-blue-600" />
+                <input
+                  type="radio"
+                  class="size-3 md:size-4 accent-blue-600"
+                  value="admin"
+                  name="role"
+                />
                 <span class="text-gray-700">Admin</span>
               </label>
 
               <!-- Student -->
               <label class="flex items-center gap-1 cursor-pointer">
-                <input type="radio" class="size-3 md:size-4 accent-blue-600" />
+                <input
+                  type="radio"
+                  class="size-3 md:size-4 accent-blue-600"
+                  value="student"
+                  name="role"
+                />
                 <span class="text-gray-700">Student</span>
               </label>
             </div>
           </div>
 
           <!-- Username -->
-          <label class="text-sm text-gray-700">Username</label>
+          <label class="text-sm text-gray-700">Username (email)</label>
           <input
-            type="text"
+            type="email"
+            name="email"
+            placeholder="email"
             class="w-full outline-none border-gray-200 rounded-md px-3 py-2 mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
 
@@ -78,6 +96,8 @@
           <label class="text-sm text-gray-700">Password</label><br />
           <input
             type="password"
+            placeholder="password"
+            name="password"
             class="w-full max-w-2xl border-gray-200 rounded-md px-3 py-2 mt-1 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
 
@@ -91,7 +111,8 @@
           <button
             class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
           >
-            <a href="./src/Pages/student/dashboard.html">Sign in</a>
+            Sign In
+            <!-- <a href="">Sign in</a> -->
           </button>
 
           <!-- Forgot password -->
@@ -105,7 +126,7 @@
             <a href="#" class="text-blue-600 hover:underline">Register here</a>
           </p>
         </div>
-      </div>
+      </form>
     </main>
   </body>
 </html>
