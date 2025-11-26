@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Courses</title>
+    <title>Course Reports</title>
+
     <!-- Fontawesome -->
     <link
       rel="stylesheet"
@@ -11,6 +12,9 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+
+    <!-- Style -->
+     <link rel="stylesheet" href="../../style.css">
 
     <!-- JavaScript files -->
     <script type="module" src="../../JS/main.js" defer></script>
@@ -30,24 +34,20 @@
 
       <!-- Dashboard Content -->
       <section
-        class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
+        class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen flex flex-col gap-4"
       >
-        <h1 class="text-3xl font-bold text-[#012970] mb-6">My Courses</h1>
+        <h1 class="text-3xl font-bold text-primary mb-6">Course Reports</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="bg-white p-5 shadow rounded-xl">
-            <h3 class="font-semibold text-lg text-[#012970]">
-              Web Development
-            </h3>
-            <p class="text-gray-500">42 Students</p>
-          </div>
+        <div class="bg-white p-6 shadow rounded-xl">
+          <p class="text-gray-500">Select course to view report:</p>
 
-          <div class="bg-white p-5 shadow rounded-xl">
-            <h3 class="font-semibold text-lg text-[#012970]">
-              Database Systems
-            </h3>
-            <p class="text-gray-500">35 Students</p>
-          </div>
+          <select class="border p-2 rounded mt-3">
+            <option>Web Development</option>
+            <option>Database Systems</option>
+          </select>
+        </div>
+        <div class="bg-white p-6 shadow rounded-xl">
+          <p>Report content😊</p>
         </div>
       </section>
     </main>

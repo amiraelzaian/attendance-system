@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedules Management</title>
+
+    <!-- Fontawesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Style -->
+    <link rel="stylesheet" href="../../style.css" />
+
+    <!-- JavaScript files -->
+    <script type="module" src="../../JS/main.js" defer></script>
+    <script
+      defer
+      type="module"
+      src="../../JS/modules/student/dashboard.js"
+    ></script>
+    <script defer type="module" src="../../JS/componentsJS/header.js"></script>
+    <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+  </head>
+
+  <body>
+    <!-- Overlay for menue bar -->
+    <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
+
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="h-dvh grid grid-cols-1 lg:grid-cols-5">
+      <!-- Sidebar -->
+      <div id="sidebar"></div>
+
+      <!-- Dashboard Content -->
+      <section
+        class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
+      >
+        <!-- Title -->
+        <div class="mb-8">
+          <h1 class="text-2xl text-primary font-semibold">Schedules</h1>
+          <p class="text-sm text-gray-500">Home / Schedules</p>
+        </div>
+
+        <!-- Content -->
+
+        <main class="p-0 md:p-6">
+          <button class="bg-primary text-white px-4 py-2 rounded-lg mb-6">
+            <i class="fa-solid fa-plus mr-2"></i>Add Schedule
+          </button>
+
+          <div
+            class="bg-white rounded-xl shadow overflow-clip md:overflow-visible"
+          >
+            <table class="w-full text-xs md:text-sm block md:table table-auto">
+              <thead class="bg-blue-50 hidden md:table-header-group">
+                <tr>
+                  <th class="px-4 py-3">Course</th>
+                  <th class="px-4 py-3">Instructor</th>
+                  <th class="px-4 py-3">Day</th>
+                  <th class="px-4 py-3">Time</th>
+                  <th class="px-4 py-3">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody class="block md:table-row-group">
+                <tr
+                  class="border-b border-gray-200 block md:table-row p-4 md:p-0 rounded-lg md:rounded-none mb-4 md:mb-0 bg-white md:bg-transparent shadow md:shadow-none"
+                >
+                  <td class="px-4 py-2 block md:table-cell">
+                    <span class="font-semibold md:hidden">Course: </span
+                    >Programming 101
+                  </td>
+
+                  <td class="px-4 py-2 block md:table-cell">
+                    <span class="font-semibold md:hidden">Instructor: </span>Dr.
+                    Omar
+                  </td>
+
+                  <td class="px-4 py-2 block md:table-cell">
+                    <span class="font-semibold md:hidden">Day: </span>Sunday
+                  </td>
+
+                  <td class="px-4 py-2 block md:table-cell">
+                    <span class="font-semibold md:hidden">Time: </span>10:00 AM
+                  </td>
+
+                  <td class="px-4 py-3 flex gap-4 md:table-cell md:text-center">
+                    <button class="delete-btn">
+                      <i
+                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"
+                      ></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </section>
+    </main>
+  </body>
+</html>

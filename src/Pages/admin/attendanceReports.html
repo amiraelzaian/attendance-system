@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Reports</title>
+
+    <!-- Fontawesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Style -->
+    <link rel="stylesheet" href="../../style.css" />
+
+    <!-- JavaScript files -->
+    <script type="module" src="../../JS/main.js" defer></script>
+    <script
+      defer
+      type="module"
+      src="../../JS/modules/student/dashboard.js"
+    ></script>
+    <script defer type="module" src="../../JS/componentsJS/header.js"></script>
+    <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+  </head>
+
+  <body>
+    <!-- Overlay for menue bar -->
+    <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
+
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="h-dvh grid grid-cols-1 lg:grid-cols-5">
+      <!-- Sidebar -->
+      <div id="sidebar"></div>
+
+      <!--  Content -->
+      <section
+        class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
+      >
+        <!-- Title -->
+        <div class="mb-8">
+          <h1 class="text-2xl text-primary font-semibold">
+            Attendance Reports
+          </h1>
+          <p class="text-sm text-gray-500">Home / Attendance Reports</p>
+        </div>
+        <!-- Content -->
+        <main class="p-0 md:p-6">
+          <button class="bg-green-600 text-white px-4 py-2 rounded-lg mb-6">
+            <i class="fa-solid fa-file-excel mr-2"></i>Export Excel
+          </button>
+
+          <div class="bg-white rounded-xl shadow overflow-auto">
+            <table class="w-full">
+              <thead class="bg-blue-50">
+                <tr>
+                  <th class="px-4 py-3">Student</th>
+                  <th class="px-4 py-3">Course</th>
+                  <th class="px-4 py-3">Date</th>
+                  <th class="px-4 py-3">Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr class="border-b border-gray-200 ">
+                  <td class="px-4 py-3 text-center">Ahmed Ali</td>
+                  <td class="px-4 py-3 text-center">Programming 101</td>
+                  <td class="px-4 py-3 text-center">2025-01-15</td>
+                  <td class="px-4 py-3 text-center text-green-600 font-semibold">
+                    Present
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </section>
+    </main>
+  </body>
+</html>
