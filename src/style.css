@@ -2,11 +2,7 @@
 @theme {
   --color-cream-primary: #fbfbf2;
   --color-primary: #012970;
-  --color-main-bg: #181d25;
-  --color-movie: #12161c;
-  --color-footer: #1c1c1c;
   --color-secondary: #5b86e5;
-  --color-icons: #00b5c7;
 }
 
 @layer components {
@@ -20,11 +16,8 @@
     @apply flex items-center gap-3 p-3 rounded-lg text-red-600 hover:bg-red-100 transition mt-6;
   }
 
-  .title-link {
-    @apply text-xs text-gray-500 tracking-widest font-semibold mb-2;
-  }
-  .hover {
-    @apply hover:text-icons transition-all duration-300;
+  .delete-btn {
+    @apply hover:bg-red-100 transition-all duration-300 p-1 w-full rounded-lg;
   }
 }
 

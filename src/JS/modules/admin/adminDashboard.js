@@ -45,12 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
 
       <ul class="space-y-3">
-        <li class="flex justify-between border-b pb-2">
+        <li class="flex justify-between border-b border-gray-200 pb-2">
           <p>New student added: <span class="font-semibold">Ahmed Ali</span></p>
           <span class="text-gray-400 text-sm">2 hours ago</span>
         </li>
 
-        <li class="flex justify-between border-b pb-2">
+        <li class="flex justify-between border-b border-gray-200 pb-2">
           <p>Instructor updated schedule</p>
           <span class="text-gray-400 text-sm">5 hours ago</span>
         </li>

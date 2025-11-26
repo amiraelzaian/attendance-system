@@ -92,31 +92,31 @@ export const detectSidebar = function () {
         </a>
 
         <a href="../../Pages/admin/users.html"
-          class="nav-link">
+          class="users-btn nav-link">
           <i class="fa-solid fa-users text-primary"></i>
           Users
         </a>
 
         <a href="../../Pages/admin/departments.html"
-          class="nav-link">
+          class="departments-btn nav-link">
           <i class="fa-solid fa-building text-primary"></i>
           Departments
         </a>
 
         <a href="../../Pages/admin/courses.html"
-          class="nav-link">
+          class="courses-btn nav-link">
           <i class="fa-solid fa-book text-primary"></i>
           Courses
         </a>
 
         <a href="../../Pages/admin/schedules.html"
-          class="nav-link">
+          class="schedules-btn nav-link">
           <i class="fa-solid fa-calendar-days text-primary"></i>
           Schedules
         </a>
 
         <a href="../../Pages/admin/attendanceReports.html"
-          class="nav-link">
+          class="attendanceReports-btn nav-link">
           <i class="fa-solid fa-file-export text-primary"></i>
           Attendance Reports
         </a>
@@ -150,11 +150,11 @@ export const activeCurrentPage = function () {
     courseReports: ".course-btn",
     instructorCourses: ".instructor-btn",
     markAttendance: ".mark-btn",
-    users: "",
-    departments: "",
-    courses: "",
-    schedules: "",
-    attendanceReports: "",
+    users: ".users-btn",
+    departments: ".departments-btn",
+    courses: ".courses-btn",
+    schedules: ".schedules-btn",
+    attendanceReports: ".attendanceReports-btn",
   };
   for (const [key, value] of Object.entries(pageMap)) {
     if (curPage.includes(key)) {

@@ -1,7 +1,6 @@
 import { detectSidebar } from "./sidebar";
 import { activeCurrentPage } from "./sidebar";
 document.addEventListener("DOMContentLoaded", () => {
-
   const headerEl = document.querySelector("#header");
   const navSide = detectSidebar();
   if (headerEl) {
@@ -22,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         />
         <h4 class="text-primary text-lg font-medium">Batoul</h4>
       </a>
-      <button id="menu-btn" class="lg:hidden">
+      <button id="menu-btn" class="text-primary lg:hidden">
         <i class="fa-solid fa-bars text-lg"></i>
       </button>
     </div>
