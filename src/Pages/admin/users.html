@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users Management</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-[#F6F9FF] text-[#012970] min-h-screen">
+    <header class="bg-white shadow px-6 py-4">
+      <h1 class="text-2xl font-semibold">Users Management</h1>
+    </header>
+
+    <main class="p-6">
+      <!-- Add User Button -->
+      <button class="bg-blue-600 text-white px-4 py-2 rounded-lg mb-4">
+        <i class="fa-solid fa-plus mr-2"></i>Add User
+      </button>
+
+      <!-- Users Table -->
+      <div class="bg-white rounded-xl shadow overflow-auto">
+        <table class="w-full text-left">
+          <thead class="bg-blue-50">
+            <tr>
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">Email</th>
+              <th class="px-4 py-3">Role</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="border-b">
+              <td class="px-4 py-3">Ahmed Ali</td>
+              <td class="px-4 py-3">ahmed@email.com</td>
+              <td class="px-4 py-3">Student</td>
+              <td class="px-4 py-3 flex gap-3">
+                <i class="fa-solid fa-pen text-green-600 cursor-pointer"></i>
+                <i class="fa-solid fa-trash text-red-600 cursor-pointer"></i>
+              </td>
+            </tr>
+
+            <tr class="border-b">
+              <td class="px-4 py-3">Mona Salah</td>
+              <td class="px-4 py-3">mona@email.com</td>
+              <td class="px-4 py-3">Instructor</td>
+              <td class="px-4 py-3 flex gap-3">
+                <i class="fa-solid fa-pen text-green-600 cursor-pointer"></i>
+                <i class="fa-solid fa-trash text-red-600 cursor-pointer"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>

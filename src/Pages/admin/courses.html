@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courses Management</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-[#F6F9FF] text-[#012970]">
+    <header class="bg-white shadow px-6 py-4">
+      <h1 class="text-2xl font-semibold">Courses Management</h1>
+    </header>
+
+    <div class="p-6">
+      <button class="bg-blue-600 text-white px-4 py-2 rounded-lg mb-4">
+        <i class="fa-solid fa-plus mr-2"></i>Add Course
+      </button>
+
+      <div class="bg-white rounded-xl shadow overflow-auto">
+        <table class="w-full text-left">
+          <thead class="bg-blue-50">
+            <tr>
+              <th class="px-4 py-3">Course</th>
+              <th class="px-4 py-3">Department</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="border-b">
+              <td class="px-4 py-3">Programming 101</td>
+              <td class="px-4 py-3">Computer Science</td>
+              <td class="px-4 py-3 flex gap-4">
+                <i class="fa-solid fa-pen text-green-600"></i>
+                <i class="fa-solid fa-trash text-red-600"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
