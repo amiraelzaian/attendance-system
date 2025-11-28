@@ -12,6 +12,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   try {
     const user = await signIn(email, password);
+
     console.log("User signed in:", user);
 
     const userData = await getUser(user.uid);
@@ -28,6 +29,8 @@ loginForm.addEventListener("submit", async (e) => {
 
     // Save role for later use
     localStorage.setItem("role", role);
+    localStorage.setItem("uId", user.uid);
+    console.log("Role saved:", role, "User ID saved:", user.uid);
 
     window.location.href = "./src/Pages/student/dashboard.html";
     loginForm.reset();
@@ -60,3 +63,5 @@ if (eyeIcon) {
     }
   });
 }
+
+// get id
