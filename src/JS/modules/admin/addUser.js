@@ -6,6 +6,21 @@ const submitButton = document.querySelector(".submit-button");
 const popUp = document.querySelector(".popup");
 const AddUserForm = document.querySelector(".add-user-form");
 
+
+
+const checkBoxes = document.querySelectorAll(".course-checkbox");
+const coursesHidden = document.getElementById("coursesHidden");
+
+checkBoxes.forEach(cb => {
+  cb.addEventListener("change", () => {
+    const selected = [...checkBoxes]
+      .filter(c => c.checked)
+      .map(c => c.value);
+
+    coursesHidden.value = selected.join(","); // store in hidden input
+  });
+});
+
 // functions
 function showPopup() {
     overlay.classList.remove("hidden");
@@ -47,10 +62,35 @@ addUserButton.addEventListener("click", function (){
 
 overlay.addEventListener("click",()=>hidePopup());
 
-submitButton.addEventListener("click", ()=>{
-    console.log("submit button clicked");
+// submitButton.addEventListener("click", ()=>{
+//     console.log("submit button clicked");
+//     submitForm();
+// });
+AddUserForm.addEventListener("submit", (e) => {
+    e.preventDefault(); // prevent reload
+
+    const username = document.getElementById("username");
+    const email = document.getElementById("email");
+
+    if (!username.value.trim() || !email.value.trim()) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    if (!email.checkValidity()) {
+        alert("Please enter a valid email.");
+        return;
+    }
+
+    if (coursesHidden.value.trim() === "") {
+    alert("Please select at least one course.");
+    return;
+}
+
+
     submitForm();
 });
+
 
 
 const dropdownBtn = document.getElementById("dropdownBtn");
@@ -118,3 +158,5 @@ window.addEventListener("click", (e) => {
     arrowIcon.classList.remove("rotate-180");
   }
 });
+
+

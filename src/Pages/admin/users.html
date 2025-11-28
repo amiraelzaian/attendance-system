@@ -55,19 +55,100 @@
           <h2 class="text-center text-2xl text-primary font-semibold">Add User</h2>
           <form class="add-user-form">
             <label for="role" class="role-label block  text-primary font-semibold pb-2">Role:</label>
-            <input
-              class="rule-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
-              type="text" class="role-input" name="rule" placeholder="Enter the role" required>
+
+            <!-- Toggle Buttons -->
+            <div class="mb-2">
+              <div class="flex gap-4">
+                <!-- instructor -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="instructor" name="role"
+                    required />
+                  <span class="text-gray-700">Instructor</span>
+                </label>
+                <!-- Student -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="student" name="role" />
+                  <span class="text-gray-700">Student</span>
+                </label>
+              </div>
+            </div>
             <label for="username" class="username-label  block  text-primary font-semibold pb-2">Username:</label>
             <input
               class="username-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
               type="text" id="username" name="username" placeholder=" Enter the username" required>
             <label for="email" class="email-label  block  text-primary font-semibold pb-2">Email:</label>
             <input
-              class="email-input mb-7 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+              class="email-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
               type="email" id="email" name="email" placeholder=" Enter a valid E-mail" required>
-            <button type="button"
-              class="submit-button block bg-[#012970] text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e]">Add</button>
+
+            <label for="role" class="role-label block  text-primary font-semibold pb-2">Departement:</label>
+            <!-- Toggle Buttons -->
+            <div class="mb-3">
+              <div class="flex gap-4">
+                <!-- CS -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="cs" name="department" required />
+                  <span class="text-gray-700">CS</span>
+                </label>
+                <!-- IT -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="it" name="department" />
+                  <span class="text-gray-700">IT</span>
+                </label>
+                <!-- IS -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="is" name="department" />
+                  <span class="text-gray-700">IS</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="relative w-64">
+              <!-- Button -->
+              <button id="dropdownBtn"
+                class="w-full px-3 py-2 border border-gray-400 rounded-md bg-white flex items-center justify-between">
+                <span id="dropdownLabel">Select courses</span>
+                <span id="arrowIcon" class="transition-transform duration-200">
+                  ▼
+                </span>
+              </button>
+
+              <!-- Dropdown menu -->
+              <div id="dropdownMenu"
+                class="absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow hidden max-h-48 overflow-y-auto p-3 z-10">
+
+                <label class="flex items-center gap-2 mb-2">
+                  <input type="checkbox" value="ComputerArchitecture" class="course-checkbox">
+                  ComputerArchitecture
+                </label>
+
+                <label class="flex items-center gap-2 mb-2">
+                  <input type="checkbox" value="DataStructures" class="course-checkbox">
+                  DataStructures
+                </label>
+
+                <label class="flex items-center gap-2 mb-2">
+                  <input type="checkbox" value="Algorithms" class="course-checkbox">
+                  Algorithms
+                </label>
+
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" value="Databases" class="course-checkbox">
+                  Databases
+                </label>
+              </div>
+            </div>
+
+            <!-- Selected items (tags) -->
+            <div id="selectedTags" class="flex flex-wrap gap-2 mt-3"></div>
+
+            <!-- for making choosing a course required  -->
+            <input type="text" id="coursesHidden" name="courses" class="hidden" required>
+
+
+            <button type="submit"
+              class="submit-button mt-5 block bg-[#012970] text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e]">Add</button>
+
             <a href="#" class="close-btn block mt-4 bg-[#86211a] text-center text-white
               p-2 rounded-md no-underline hover:bg-[#bb1e1e]">Close</a>
           </form>
