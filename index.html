@@ -1,159 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Fontawesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
 
-    <!-- JavaScript files -->
-    <script type="module" src="./login.js" defer></script>
-    <script type="module" src="./src/JS/main.js" defer></script>
-    <script type="module" defer src="./src/JS/componentsJS/header.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Fontawesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>Attendance-System</title>
-  </head>
-  <body id="loginPage" class="bg-[#eef2f7]">
-    <!-- Header section -->
-    <div id="header"></div>
-    <!-- Main  section -->
-    <main
-      class="flex flex-col md:flex-row p-8 sm:p-16 justify-around items-center gap-8"
-    >
-      <!-- Left Section -->
-      <div class="flex flex-col justify-center text-center md:text-left">
-        <h1 class="text-4xl sm:text-5xl font-semibold text-gray-900">
-          Attendance
-        </h1>
-        <h2 class="text-4xl sm:text-5xl font-semibold text-[#012970] mt-2">
-          for your business
-        </h2>
+  <!-- JavaScript files -->
+  <script type="module" src="./login.js" defer></script>
+  <script type="module" src="./src/JS/main.js" defer></script>
+  <script type="module" defer src="./src/JS/componentsJS/header.js"></script>
 
-        <p class="mt-6 text-gray-600 max-w-[500px] leading-relaxed">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet,
-          itaque accusantium odio, soluta, corrupti aliquam quibusdam tempora at
-          cupiditate quis eum maiores libero veritatis? Dicta facilis sint
-          aliquid ipsum atque?
+  <title>Attendance-System</title>
+</head>
+
+<body id="loginPage" class="bg-[#eef2f7]">
+  <!-- Header section -->
+  <div id="header"></div>
+  <!-- Main  section -->
+  <main class="flex flex-col md:flex-row p-8 sm:p-16 justify-around items-center gap-8">
+    <!-- Left Section -->
+    <div class="flex flex-col justify-center text-center md:text-left">
+      <h1 class="text-4xl sm:text-5xl font-semibold text-gray-900">
+        Attendance
+      </h1>
+      <h2 class="text-4xl sm:text-5xl font-semibold text-[#012970] mt-2">
+        Management System
+      </h2>
+
+      <p class="mt-6 text-gray-600 max-w-[500px] leading-relaxed">
+        Welcome to our Attendance Management System! This platform streamlines the attendance tracking process for
+        educational institutions, enabling instructors, administrators, and students to manage and monitor attendance
+        efficiently.
+      </p>
+    </div>
+
+    <!-- Right Section -->
+    <form class="login-form">
+      <div class="w-fit bg-white shadow p-10">
+        <!-- Toggle Buttons -->
+        <div class="mb-6">
+          <div class="flex gap-4">
+            <!-- instructor -->
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="radio" class="size-3 md:size-4 accent-blue-600" value="instructor" name="role" />
+              <span class="text-gray-700">Instructor</span>
+            </label>
+
+            <!-- Admin -->
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="radio" class="size-3 md:size-4 accent-blue-600" value="admin" name="role" />
+              <span class="text-gray-700">Admin</span>
+            </label>
+
+            <!-- Student -->
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="radio" class="size-3 md:size-4 accent-blue-600" value="student" name="role" />
+              <span class="text-gray-700">Student</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Username -->
+        <label class="text-sm text-gray-700">Username (email)</label>
+        <input type="email" name="email" placeholder="email"
+          class="w-full outline-none border-gray-200 rounded-md px-3 py-2 mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300" />
+
+        <!-- Password -->
+        <label class="text-sm text-gray-700">Password</label><br />
+        <div class="relative w-full max-w-2xl">
+          <input type="password" placeholder="password" name="password" id="password"
+            class="w-full border-gray-200 rounded-md px-3 py-2 mt-1 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-300 pr-10" />
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700">
+            <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </span>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="flex items-center gap-2 mb-5 mt-2">
+          <input type="checkbox" class="accent-blue-600" />
+          <span class="text-sm text-gray-700">Remember me</span>
+        </div>
+
+        <!-- Sign In button -->
+        <button class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
+          Sign in
+        </button>
+
+        <!-- Forgot password -->
+        <p class="text-sm text-gray-500 mt-3 cursor-pointer hover:underline">
+          Forgot password?
+        </p>
+
+        <!-- Register -->
+        <p class="text-sm text-gray-600 mt-6">
+          Don’t have an account?
+          <a href="#" class="text-blue-600 hover:underline">Register here</a>
         </p>
       </div>
+    </form>
+  </main>
+</body>
 
-      <!-- Right Section -->
-      <form class="login-form">
-        <div class="w-fit bg-white shadow p-10">
-          <!-- Toggle Buttons -->
-          <div class="mb-6">
-            <div class="flex gap-4">
-              <!-- instructor -->
-              <label class="flex items-center gap-1 cursor-pointer">
-                <input
-                  type="radio"
-                  class="size-3 md:size-4 accent-blue-600"
-                  value="instructor"
-                  name="role"
-                />
-                <span class="text-gray-700">Instructor</span>
-              </label>
-
-              <!-- Admin -->
-              <label class="flex items-center gap-1 cursor-pointer">
-                <input
-                  type="radio"
-                  class="size-3 md:size-4 accent-blue-600"
-                  value="admin"
-                  name="role"
-                />
-                <span class="text-gray-700">Admin</span>
-              </label>
-
-              <!-- Student -->
-              <label class="flex items-center gap-1 cursor-pointer">
-                <input
-                  type="radio"
-                  class="size-3 md:size-4 accent-blue-600"
-                  value="student"
-                  name="role"
-                />
-                <span class="text-gray-700">Student</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Username -->
-          <label class="text-sm text-gray-700">Username (email)</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="email"
-            class="w-full outline-none border-gray-200 rounded-md px-3 py-2 mt-1 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300"
-          />
-
-          <!-- Password -->
-          <label class="text-sm text-gray-700">Password</label><br />
-          <div class="relative w-full max-w-2xl">
-            <input
-              type="password"
-              placeholder="password"
-              name="password"
-              id="password"
-              class="w-full border-gray-200 rounded-md px-3 py-2 mt-1 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-300 pr-10"
-            />
-            <span
-              class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
-            >
-              <svg
-                id="eye-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-            </span>
-          </div>
-
-          <!-- Remember Me -->
-          <div class="flex items-center gap-2 mb-5 mt-2">
-            <input type="checkbox" class="accent-blue-600" />
-            <span class="text-sm text-gray-700">Remember me</span>
-          </div>
-
-          <!-- Sign In button -->
-          <button
-            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            Sign in
-          </button>
-
-          <!-- Forgot password -->
-          <p class="text-sm text-gray-500 mt-3 cursor-pointer hover:underline">
-            Forgot password?
-          </p>
-
-          <!-- Register -->
-          <p class="text-sm text-gray-600 mt-6">
-            Don’t have an account?
-            <a href="#" class="text-blue-600 hover:underline">Register here</a>
-          </p>
-        </div>
-      </form>
-    </main>
-  </body>
 </html>
