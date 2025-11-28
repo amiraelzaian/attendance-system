@@ -45,6 +45,9 @@ export const logOut = async () => {
     throw error;
   }
 };
+
+
+
 // get current user
 export const getCurrentUser = async () => {
   return auth.currentUser;

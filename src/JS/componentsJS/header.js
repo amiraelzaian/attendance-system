@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
           class="w-12 rounded-full"
         />
         <h4
-          class="text-primary font-medium text-xl"
+          class=" username text-primary font-medium text-xl"
         >
           Batoul
         </h4>
