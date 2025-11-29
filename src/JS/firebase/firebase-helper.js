@@ -466,6 +466,7 @@ export const markBulkAttendance = async (attendanceList) => {
   }
 };
 
+
 // Get single attendance by ID
 export const getAttendance = async (id) => {
   try {
