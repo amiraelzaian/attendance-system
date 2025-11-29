@@ -1,85 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Courses Management</title>
 
-    <!-- Fontawesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Courses Management</title>
 
-    <!-- Style -->
-    <link rel="stylesheet" href="../../style.css" />
+  <!-- Fontawesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- JavaScript files -->
-    <script type="module" src="../../JS/main.js" defer></script>
-    <script
-      defer
-      type="module"
-      src="../../JS/modules/student/dashboard.js"
-    ></script>
-    <script defer type="module" src="../../JS/componentsJS/header.js"></script>
-    <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
-  </head>
+  <!-- Style -->
+  <link rel="stylesheet" href="../../style.css" />
 
-  <body>
-    <!-- Overlay for menue bar -->
-    <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
+  <!-- JavaScript files -->
+  <script type="module" src="../../JS/main.js" defer></script>
+  <script defer type="module" src="../../JS/modules/student/dashboard.js"></script>
+  <script defer type="module" src="../../JS/componentsJS/header.js"></script>
+  <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+  <script defer type="module" src="../../JS/modules/admin/addCourse.js"></script>
+</head>
 
-    <!-- Header -->
-    <div id="header"></div>
+<body>
+  <!-- Overlay for menue bar -->
+  <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
 
-    <main class="h-dvh grid grid-cols-1 lg:grid-cols-5">
-      <!-- Sidebar -->
-      <div id="sidebar"></div>
+  <!-- Header -->
+  <div id="header"></div>
 
-      <!-- Dashboard Content -->
-      <section
-        class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
-      >
-        <!-- Title -->
-        <div class="mb-8">
-          <h1 class="text-2xl text-primary font-semibold">Courses</h1>
-          <p class="text-sm text-gray-500">Home / Courses</p>
+  <main class="h-dvh grid grid-cols-1 lg:grid-cols-5">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
+
+    <!-- Dashboard Content -->
+    <section class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen">
+      <!-- Title -->
+      <div class="mb-8">
+        <h1 class="text-2xl text-primary font-semibold">Courses</h1>
+        <p class="text-sm text-gray-500">Home / Courses</p>
+      </div>
+      <!-- Content -->
+      <div class="p-0 md:p-6">
+        <button
+          class="admin--addCourse bg-primary text-white px-4 py-2 rounded-lg mb-6 shadow hover:bg-blue-700 transition">
+          <i class="fa-solid fa-plus mr-2"></i>Add Course
+        </button>
+
+        <!-- adding new course  -->
+        <div class="addCourse-overlay hidden fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] z-10"></div>
+        <div
+          class="popup hidden -translate-x-1/2 -translate-y-1/2 fixed top-[50%] left-[50%] bg-white p-5 rounded-md z-20 w-[360px]">
+          <h2 class="text-center text-2xl text-primary font-semibold mb-5">
+            Add Course
+          </h2>
+          <form class="add-Course-form">
+
+            <label for="department" class="department-label block text-primary font-semibold pb-2">Departement:</label>
+            <input
+              class="department-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+              type="text" id="department" name="department" placeholder=" Enter the department" required />
+
+            <label for="cousre-name" class="course-label block text-primary font-semibold pb-2">Course Name:</label>
+            <input
+              class="course-name-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+              type="text" id="course-name" name="course" placeholder=" Enter Course Name" required />
+
+            <label for="cousre-id" class="course-label block text-primary font-semibold pb-2">Course ID:</label>
+            <input
+              class="course-id-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+              type="text" id="course-id" name="course" placeholder=" Enter Course ID" required />
+
+            <button type="submit"
+              class="submit-button mt-5 block bg-[#012970] text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e]">
+              Add
+            </button>
+
+            <a href="#"
+              class="close-btn block mt-4 bg-[#86211a] text-center text-white p-2 rounded-md no-underline hover:bg-[#bb1e1e]">Close</a>
+          </form>
         </div>
-        <!-- Content -->
-        <div class="p-0 md:p-6">
-          <button class="bg-primary text-white px-4 py-2 rounded-lg mb-6">
-            <i class="fa-solid fa-plus mr-2"></i>Add Course
-          </button>
 
-          <div class="bg-white rounded-xl shadow overflow-auto">
-            <table class="w-full text-left">
-              <thead class="bg-blue-50">
-                <tr>
-                  <th class="px-4 py-3">Course</th>
-                  <th class="px-4 py-3">Department</th>
-                  <th class="px-4 py-3">Actions</th>
-                </tr>
-              </thead>
 
-              <tbody>
-                <tr class="border-b border-gray-200">
-                  <td class="px-4 py-3">Programming 101</td>
-                  <td class="px-4 py-3">Computer Science</td>
-                  <td class="px-4 py-3 flex justify-center items-center">
-                    <button class="delete-btn">
-                      <i
-                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"
-                      ></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+
+
+        <div class="bg-white rounded-xl shadow overflow-auto">
+          <table class="w-full text-left">
+            <thead class="bg-blue-50">
+              <tr>
+                <th class="px-4 py-3">Course</th>
+                <th class="px-4 py-3">Department</th>
+                <th class="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="border-b border-gray-200">
+                <td class="px-4 py-3">Programming 101</td>
+                <td class="px-4 py-3">Computer Science</td>
+                <td class="px-4 py-3 flex justify-center items-center">
+                  <button class="delete-btn">
+                    <i class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </section>
-    </main>
-  </body>
+      </div>
+    </section>
+  </main>
+</body>
+
 </html>
