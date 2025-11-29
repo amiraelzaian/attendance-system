@@ -2,7 +2,7 @@
 @theme {
   --color-cream-primary: #fbfbf2;
   --color-primary: #012970;
-  --color-secondary: #5b86e5;
+  --color-btn: #1d4ed8;
 }
 
 @layer components {
