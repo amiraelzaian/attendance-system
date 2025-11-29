@@ -16,6 +16,8 @@ import {
   startAfter,
   addDoc,
 } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase.js";
 
 /* ================ HELPER FUNCTIONS ================ */
 
@@ -40,30 +42,67 @@ const handleError = (functionName, error) => {
 /* ================ USERS ================ */
 
 // Create new account
-export const createUser = async (id = null, data) => {
+export const createUser = async (data) => {
   try {
-    if (!data.name || !data.email || !data.role) {
-      throw new Error("Missing required fields: name, email, role");
+    // Validation
+    if (!data.name || !data.email || !data.password) {
+      throw new Error("Missing required fields: name, email, password");
     }
 
-    const userId = id || generateId("user");
-    const userCourses = Array.isArray(data.courses) ? data.courses : [];
+    console.log("🔵 Creating user in Firebase Auth...");
 
+    // 1. Create user in Firebase Authentication
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      data.email.toLowerCase(),
+      data.password
+    );
+
+    const userId = userCredential.user.uid;
+    console.log("✅ User created in Auth:", userId);
+
+    // 2. Convert courses to references (if needed)
+    // If courses are just IDs, keep them as strings
+    // If you want references, use: doc(db, "courses", courseId)
+    const courses = Array.isArray(data.courses) ? data.courses : [];
+
+    // 3. Convert department to reference (if needed)
+    // If department is just an ID, keep it as string
+    // If you want reference, use: doc(db, "departments", data.department)
+    const department = data.department || "";
+
+    console.log("🔵 Saving user data to Firestore...");
+
+    // 4. Save user data in Firestore
     await setDoc(doc(db, "users", userId), {
       name: data.name,
-      role: data.role,
+      role: data.role || "student",
       email: data.email.toLowerCase(),
-      department: data.department || "",
-      courses: userCourses,
+      department: department,
+      courses: courses,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
 
-    console.log(`User created: ${userId}`);
-    return userId;
+    console.log("✅ User data saved to Firestore");
+    return { success: true, userId };
   } catch (error) {
-    handleError("createUser", error);
-    return null;
+    console.error("❌ Error creating user:", error);
+
+    // Handle specific Firebase errors
+    let errorMessage = "Failed to create user";
+
+    if (error.code === "auth/email-already-in-use") {
+      errorMessage = "This email is already registered";
+    } else if (error.code === "auth/weak-password") {
+      errorMessage = "Password must be at least 6 characters";
+    } else if (error.code === "auth/invalid-email") {
+      errorMessage = "Invalid email format";
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    return { success: false, error: errorMessage };
   }
 };
 

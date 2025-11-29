@@ -177,3 +177,5 @@ function attachDeleteHandlers() {
     });
   });
 }
+
+export { renderUsers };
