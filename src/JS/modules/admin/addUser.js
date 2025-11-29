@@ -46,19 +46,31 @@ document.addEventListener("DOMContentLoaded", function () {
     popUp.classList.add("hidden");
     AddUserForm.reset();
 
-    const checkboxes = document.querySelectorAll(".course-checkbox");
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    const arrowIcon = document.getElementById("arrowIcon");
+    // Reset dropdown
+    checkboxes.forEach(cb => cb.checked = false); // uncheck all
+    updateTags(); // clear selected tags and reset placeholder
+    dropdownMenu.classList.add("hidden"); // close dropdown
+    arrowIcon.classList.remove("rotate-180"); // reset arrow
+}
 
-    checkboxes.forEach((cb) => (cb.checked = false));
-    updateTags();
-    if (dropdownMenu) dropdownMenu.classList.add("hidden");
-    if (arrowIcon) arrowIcon.classList.remove("rotate-180");
-  }
+function submitForm() {
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
 
-  // Event Listeners
-  addUserButton.addEventListener("click", function () {
-    console.log("🔵 Add User button clicked");
+    // Handle form submission logic here
+    console.log('User Added:', { username, email });
+
+    // Close the popup after submission
+    hidePopup();
+}
+
+// event handle
+closePopUp.addEventListener("click", ()=>{
+    console.log("close button clicked");
+    hidePopup();
+});
+addUserButton.addEventListener("click", function (){
+    // console.log("add user clicked");
     showPopup();
   });
 
