@@ -1,5 +1,7 @@
 import { signIn } from "./src/JS/firebase/auth.js";
 import { getUserById } from "./src/JS/firebase/firebase-helper.js";
+import { saveUserData } from "./src/JS/firebase/auth-state.js";
+import { auth } from "./src/JS/firebase/firebase.js";
 
 let loginForm = document.querySelector(".login-form");
 
@@ -10,37 +12,56 @@ loginForm.addEventListener("submit", async (e) => {
   const password = loginForm["password"].value;
   const role = loginForm["role"].value;
 
+  console.log("🔵 Starting login process...");
+  console.log("Email:", email);
+  console.log("Role:", role);
+
   try {
+    // 1. Sign in with Firebase Auth
     const user = await signIn(email, password);
+    console.log("✅ Firebase Auth successful, UID:", user.uid);
 
-    console.log("User signed in:", user);
-
+    // 2. Get user data from Firestore
     const userData = await getUserById(user.uid);
-    console.log("Fetched user data:", userData);
+    console.log("✅ User data fetched:", userData);
 
     if (!userData) {
       alert("User data not found in database.");
       return;
     }
+
     if (!role) {
       alert("Please choose your role!");
       return;
     }
 
-    // Save role for later use
-    localStorage.setItem("role", role);
-    localStorage.setItem("uId", user.uid);
-    console.log("Role saved:", role, "User ID saved:", user.uid);
+    // 3. Save to localStorage
+    console.log("💾 Saving to localStorage...");
 
+    saveUserData({
+      uid: user.uid,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+    });
+
+    // 4. Verify data was saved
+    console.log("✅ Verification - Data in localStorage:");
+    console.log("  uId:", localStorage.getItem("uId"));
+    console.log("  name:", localStorage.getItem("name"));
+    console.log("  email:", localStorage.getItem("email"));
+    console.log("  role:", localStorage.getItem("role"));
+
+    // 5. Redirect
+    console.log("🔄 Redirecting to dashboard...");
     window.location.href = "./src/Pages/student/dashboard.html";
-    loginForm.reset();
   } catch (error) {
-    console.error("Error during sign-in:", error);
-    alert("Failed to login, check your email and password.");
+    console.error("❌ Login failed:", error);
+    alert("Failed to login: " + error.message);
   }
 });
 
-// handle show passwerod
+// Handle show password
 const eyeIcon = document.getElementById("eye-icon");
 
 if (eyeIcon) {
@@ -63,5 +84,3 @@ if (eyeIcon) {
     }
   });
 }
-
-// get id
