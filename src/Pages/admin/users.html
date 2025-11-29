@@ -14,14 +14,16 @@
     />
 
     <!-- JavaScript files -->
+    <script
+      defer
+      type="module"
+      src="../../JS/modules/admin/addUser.js"
+    ></script>
     <script type="module" src="../../JS/main.js" defer></script>
-    <!-- <script type="module" src="../../JS/modules/admin/usersManagement.js"></script> -->
-    <!-- OR if you want to keep the old name: -->
     <script
       type="module"
       src="../../JS/modules/admin/adminDashboard.js"
     ></script>
-
     <script
       defer
       type="module"
@@ -29,11 +31,6 @@
     ></script>
     <script defer type="module" src="../../JS/componentsJS/header.js"></script>
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
-    <script
-      defer
-      type="module"
-      src="../../JS/modules/admin/addUser.js"
-    ></script>
   </head>
 
   <body>
@@ -65,27 +62,27 @@
             <i class="fa-solid fa-plus mr-2"></i>Add User
           </button>
 
-          <!-- adding user  -->
+          <!-- adding user popup -->
           <div
             class="addUser-overlay hidden fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] z-10"
           ></div>
           <div
-            class="popup hidden -translate-x-1/2 -translate-y-1/2 fixed top-[50%] left-[50%] bg-white p-5 rounded-md z-20 w-[360px]"
+            class="popup hidden -translate-x-1/2 -translate-y-1/2 fixed top-[50%] left-[50%] bg-white p-5 rounded-md z-20 w-[360px] max-h-[90vh] overflow-y-auto"
           >
-            <h2 class="text-center text-2xl text-primary font-semibold">
+            <h2 class="text-center text-2xl text-primary font-semibold mb-4">
               Add User
             </h2>
+
             <form class="add-user-form">
+              <!-- Role -->
               <label
                 for="role"
                 class="role-label block text-primary font-semibold pb-2"
-                >Role:</label
               >
-
-              <!-- Toggle Buttons -->
-              <div class="mb-2">
+                Role:
+              </label>
+              <div class="mb-3">
                 <div class="flex gap-4">
-                  <!-- instructor -->
                   <label class="flex items-center gap-1 cursor-pointer">
                     <input
                       type="radio"
@@ -96,7 +93,6 @@
                     />
                     <span class="text-gray-700">Instructor</span>
                   </label>
-                  <!-- Student -->
                   <label class="flex items-center gap-1 cursor-pointer">
                     <input
                       type="radio"
@@ -108,42 +104,65 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Username -->
               <label
                 for="username"
                 class="username-label block text-primary font-semibold pb-2"
-                >Username:</label
               >
+                Username:
+              </label>
               <input
-                class="username-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+                class="username-input mb-3 w-full h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
                 type="text"
                 id="username"
                 name="username"
-                placeholder=" Enter the username"
-                required
-              />
-              <label
-                for="email"
-                class="email-label block text-primary font-semibold pb-2"
-                >Email:</label
-              >
-              <input
-                class="email-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
-                type="email"
-                id="email"
-                name="email"
-                placeholder=" Enter a valid E-mail"
+                placeholder="Enter the username"
                 required
               />
 
+              <!-- Email -->
               <label
-                for="role"
-                class="role-label block text-primary font-semibold pb-2"
-                >Departement:</label
+                for="email"
+                class="email-label block text-primary font-semibold pb-2"
               >
-              <!-- Toggle Buttons -->
+                Email:
+              </label>
+              <input
+                class="email-input mb-3 w-full h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter a valid E-mail"
+                required
+              />
+
+              <!-- Password -->
+              <label
+                for="password"
+                class="password-label block text-primary font-semibold pb-2"
+              >
+                Password:
+              </label>
+              <input
+                class="password-input mb-3 w-full h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password (min 6 characters)"
+                minlength="6"
+                required
+              />
+
+              <!-- Department -->
+              <label
+                for="department"
+                class="role-label block text-primary font-semibold pb-2"
+              >
+                Department:
+              </label>
               <div class="mb-3">
                 <div class="flex gap-4">
-                  <!-- CS -->
                   <label class="flex items-center gap-1 cursor-pointer">
                     <input
                       type="radio"
@@ -154,7 +173,6 @@
                     />
                     <span class="text-gray-700">CS</span>
                   </label>
-                  <!-- IT -->
                   <label class="flex items-center gap-1 cursor-pointer">
                     <input
                       type="radio"
@@ -164,7 +182,6 @@
                     />
                     <span class="text-gray-700">IT</span>
                   </label>
-                  <!-- IS -->
                   <label class="flex items-center gap-1 cursor-pointer">
                     <input
                       type="radio"
@@ -177,68 +194,73 @@
                 </div>
               </div>
 
-              <div class="relative w-64">
-                <!-- Button -->
+              <!-- Courses Dropdown -->
+              <label class="block text-primary font-semibold pb-2"
+                >Courses:</label
+              >
+              <div class="relative w-full mb-3">
                 <button
+                  type="button"
                   id="dropdownBtn"
-                  class="w-full px-3 py-2 border border-gray-400 rounded-md bg-white flex items-center justify-between"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white flex items-center justify-between hover:border-blue-500 transition"
                 >
                   <span id="dropdownLabel">Select courses</span>
-                  <span
-                    id="arrowIcon"
-                    class="transition-transform duration-200"
+                  <span id="arrowIcon" class="transition-transform duration-200"
+                    >▼</span
                   >
-                    ▼
-                  </span>
                 </button>
 
-                <!-- Dropdown menu -->
                 <div
                   id="dropdownMenu"
                   class="absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow hidden max-h-48 overflow-y-auto p-3 z-10"
                 >
-                  <label class="flex items-center gap-2 mb-2">
+                  <label
+                    class="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                  >
                     <input
                       type="checkbox"
                       value="ComputerArchitecture"
-                      class="course-checkbox"
+                      class="course-checkbox accent-blue-600"
                     />
-                    ComputerArchitecture
+                    <span>Computer Architecture</span>
                   </label>
-
-                  <label class="flex items-center gap-2 mb-2">
+                  <label
+                    class="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                  >
                     <input
                       type="checkbox"
                       value="DataStructures"
-                      class="course-checkbox"
+                      class="course-checkbox accent-blue-600"
                     />
-                    DataStructures
+                    <span>Data Structures</span>
                   </label>
-
-                  <label class="flex items-center gap-2 mb-2">
+                  <label
+                    class="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                  >
                     <input
                       type="checkbox"
                       value="Algorithms"
-                      class="course-checkbox"
+                      class="course-checkbox accent-blue-600"
                     />
-                    Algorithms
+                    <span>Algorithms</span>
                   </label>
-
-                  <label class="flex items-center gap-2">
+                  <label
+                    class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                  >
                     <input
                       type="checkbox"
                       value="Databases"
-                      class="course-checkbox"
+                      class="course-checkbox accent-blue-600"
                     />
-                    Databases
+                    <span>Databases</span>
                   </label>
                 </div>
               </div>
 
-              <!-- Selected items (tags) -->
-              <div id="selectedTags" class="flex flex-wrap gap-2 mt-3"></div>
+              <!-- Selected tags -->
+              <div id="selectedTags" class="flex flex-wrap gap-2 mb-3"></div>
 
-              <!-- for making choosing a course required  -->
+              <!-- Hidden input for courses validation -->
               <input
                 type="text"
                 id="coursesHidden"
@@ -247,20 +269,24 @@
                 required
               />
 
+              <!-- Submit Button -->
               <button
                 type="submit"
-                class="submit-button mt-5 block bg-[#012970] text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e]"
+                class="submit-button mt-2 block bg-[#012970] text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e] transition"
               >
-                Add
+                Add User
               </button>
 
-              <a
-                href="#"
-                class="close-btn block mt-4 bg-[#86211a] text-center text-white p-2 rounded-md no-underline hover:bg-[#bb1e1e]"
-                >Close</a
+              <!-- Close Button -->
+              <button
+                type="button"
+                class="close-btn mt-3 block w-full bg-[#86211a] text-center text-white p-2 rounded-md hover:bg-[#bb1e1e] transition"
               >
+                Close
+              </button>
             </form>
           </div>
+
           <!-- Users Table Wrapper -->
           <div
             class="bg-white rounded-xl shadow overflow-x-auto md:overflow-x-visible"
@@ -300,7 +326,7 @@
                   >
                     <button class="delete-btn">
                       <i
-                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"
+                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer hover:text-red-800"
                       ></i>
                     </button>
                   </td>
@@ -326,7 +352,7 @@
                   >
                     <button class="delete-btn">
                       <i
-                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"
+                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer hover:text-red-800"
                       ></i>
                     </button>
                   </td>

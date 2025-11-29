@@ -25,6 +25,11 @@
     ></script>
     <script defer type="module" src="../../JS/componentsJS/header.js"></script>
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+    <script
+      defer
+      type="module"
+      src="../../JS/modules/admin/departments.js"
+    ></script>
   </head>
 
   <body>
@@ -38,7 +43,7 @@
       <!-- Sidebar -->
       <div id="sidebar"></div>
 
-      <!-- Content -->
+      <!-- Dashboard Content -->
       <section
         class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
       >
@@ -47,10 +52,13 @@
           <h1 class="text-2xl text-primary font-semibold">Departments</h1>
           <p class="text-sm text-gray-500">Home / Departments</p>
         </div>
-        
+
         <main class="p-0 md:p-6">
-          <button class="bg-primary text-white px-4 py-2 rounded-lg mb-6">
-            <i class="fa-solid fa-plus mr-2"></i>Add Department
+          <!-- Add departments button -->
+          <button
+            class="admin--adddepartments bg-blue-600 text-white px-4 py-2 mb-6 rounded-lg shadow hover:bg-blue-700 transition"
+          >
+            <i class="fa-solid fa-plus mr-2"></i>Add departments
           </button>
 
           <div class="bg-white rounded-xl shadow overflow-auto">
@@ -90,5 +98,39 @@
         </main>
       </section>
     </main>
+
+    <!-- Add Department Modal -->
+    <div
+      id="addDeptModal"
+      class="fixed inset-0 bg-black/40 hidden z-50 flex items-center justify-center"
+    >
+      <div class="bg-white p-6 rounded-2xl shadow-xl w-96 animate-fadeIn">
+        <h2 class="text-xl font-semibold mb-4 text-center">Add Department</h2>
+
+        <label class="block mb-2 text-sm font-medium">Department Name</label>
+        <input
+          id="deptNameInput"
+          type="text"
+          class="border border-gray-300 w-full px-3 py-2 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter department name"
+        />
+
+        <div class="flex justify-end gap-3 mt-4">
+          <button
+            id="closeDeptModal"
+            class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-100 transition"
+          >
+            Cancel
+          </button>
+
+          <button
+            id="saveDeptBtn"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
