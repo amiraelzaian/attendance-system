@@ -1,7 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { getDoc } from "firebase/firestore";
 import Chart from "chart.js/auto";
-import { getUser, getCourse } from "../../firebase/firebase-helper";
+import { getUserById, getCourse } from "../../firebase/firebase-helper";
 
 // Check if is a student and render dashboard
 document.addEventListener("DOMContentLoaded", () => {
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       console.log("Fetching user data...");
-      const user = await getUser(userId);
+      const user = await getUserById(userId);
       console.log("User data received:", user);
 
       if (user) {

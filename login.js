@@ -1,5 +1,5 @@
 import { signIn } from "./src/JS/firebase/auth.js";
-import { getUser } from "./src/JS/firebase/firebase-helper.js";
+import { getUserById } from "./src/JS/firebase/firebase-helper.js";
 
 let loginForm = document.querySelector(".login-form");
 
@@ -15,7 +15,7 @@ loginForm.addEventListener("submit", async (e) => {
 
     console.log("User signed in:", user);
 
-    const userData = await getUser(user.uid);
+    const userData = await getUserById(user.uid);
     console.log("Fetched user data:", userData);
 
     if (!userData) {

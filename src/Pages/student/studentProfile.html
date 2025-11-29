@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +13,7 @@
     />
 
     <!-- Style -->
-     <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../style.css" />
 
     <!-- JavaScript files -->
     <script type="module" src="../../JS/main.js" defer></script>
@@ -29,10 +29,9 @@
   </head>
 
   <body>
-
-     <!-- Overlay for menue bar -->
+    <!-- Overlay for menue bar -->
     <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
-  
+
     <!-- Header -->
     <div id="header"></div>
 
@@ -45,7 +44,7 @@
       <div class="col-span-5 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto">
         <!-- Profile Card -->
         <section
-          class="  bg-white shadow rounded-lg p-6 flex flex-col md:flex-row md:items-center gap-6"
+          class="bg-white shadow rounded-lg p-6 flex flex-col md:flex-row md:items-center gap-6"
         >
           <img
             src="../../../public/images/user-image.webp"
@@ -53,9 +52,11 @@
             class="w-28 h-28 rounded-full object-cover"
           />
           <div class="flex-1 space-y-2">
-            <h2 class=" profile-name text-2xl font-bold" id="profile-name"></h2>
-            <p class="  text-gray-500">Email: <span id="profile-email"></span></p>
-            <p class="text-gray-500">Department: <span id="profile-department"></span> </p>
+            <h2 class="profile-name text-2xl font-bold" id="profile-name"></h2>
+            <p class="text-gray-500">Email: <span id="profile-email"></span></p>
+            <p class="text-gray-500">
+              Department: <span id="profile-department"></span>
+            </p>
             <p class="text-gray-500">Role: <span id="profile-role"></span></p>
             <p class="text-gray-500">
               Enrolled Courses: <span id="profile-courses"></span>
@@ -121,10 +122,9 @@
         <!-- Courses -->
         <section class="bg-white shadow rounded-lg p-6 mt-6 mb-20">
           <h3 class="text-xl font-semibold mb-4">Enrolled Courses</h3>
-          <div class="enrolled-courses grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            
-
-          </div>
+          <div
+            class="enrolled-courses grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          ></div>
         </section>
       </div>
     </main>
