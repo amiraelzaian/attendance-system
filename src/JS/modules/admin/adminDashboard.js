@@ -1,68 +1,105 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const role = localStorage.getItem("role");
-  if (role !== "admin") return;
+import { getAllUsers } from "../../firebase/firebase-helper.js";
 
-  const content = document.querySelector("#dashboardContent");
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    // 1️⃣ Get user role from localStorage
+    const role = localStorage.getItem("role");
+    if (!role || (role !== "admin" && role !== "instructor")) {
+      console.warn("You are not authorized to view this page.");
+      return;
+    }
 
-  content.innerHTML = `
-  <main class="p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+    // 2️⃣ Get dashboard container
+    const content = document.querySelector("#dashboardContent");
+    if (!content) return;
 
-    <!-- Stats Cards -->
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-users text-[#012970] text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Total Students</p>
-        <p class="text-xl font-bold">2,439</p>
-      </div>
-    </div>
+    // 3️⃣ Fetch all users
+    const data = await getAllUsers();
+    if (!data || !data.users || data.users.length === 0) {
+      content.innerHTML = `<p class="text-center text-gray-500">No users found.</p>`;
+      return;
+    }
 
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-chalkboard-user text-green-600 text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Instructors</p>
-        <p class="text-xl font-bold">54</p>
-      </div>
-    </div>
+    const users = data.users;
 
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-building text-purple-600 text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Departments</p>
-        <p class="text-xl font-bold">12</p>
-      </div>
-    </div>
+    // 4️⃣ Compute stats
+    const totalStudents = users.filter((u) => u.role === "student").length;
+    const totalInstructors = users.filter(
+      (u) => u.role === "instructor"
+    ).length;
+    const totalDepartments = 12; // Adjust based on actual data
+    const totalCourses = 87; // Adjust based on actual data
 
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-book text-orange-600 text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Courses</p>
-        <p class="text-xl font-bold">87</p>
-      </div>
-    </div>
+    // 5️⃣ Render dashboard
+    content.innerHTML = `
+      <main class="p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Stats Cards -->
+        <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
+          <i class="fa-solid fa-users text-[#012970] text-3xl"></i>
+          <div>
+            <p class="text-sm text-gray-500">Total Students</p>
+            <p class="text-xl font-bold">${totalStudents}</p>
+          </div>
+        </div>
 
-    <!-- Recent Activity -->
-    <section class="bg-white rounded-xl shadow p-6 lg:col-span-4">
-      <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+        <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
+          <i class="fa-solid fa-chalkboard-user text-green-600 text-3xl"></i>
+          <div>
+            <p class="text-sm text-gray-500">Instructors</p>
+            <p class="text-xl font-bold">${totalInstructors}</p>
+          </div>
+        </div>
 
-      <ul class="space-y-3">
-        <li class="flex justify-between border-b border-gray-200 pb-2">
-          <p>New student added: <span class="font-semibold">Ahmed Ali</span></p>
-          <span class="text-gray-400 text-sm">2 hours ago</span>
-        </li>
+        <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
+          <i class="fa-solid fa-building text-purple-600 text-3xl"></i>
+          <div>
+            <p class="text-sm text-gray-500">Departments</p>
+            <p class="text-xl font-bold">${totalDepartments}</p>
+          </div>
+        </div>
 
-        <li class="flex justify-between border-b border-gray-200 pb-2">
-          <p>Instructor updated schedule</p>
-          <span class="text-gray-400 text-sm">5 hours ago</span>
-        </li>
+        <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
+          <i class="fa-solid fa-book text-orange-600 text-3xl"></i>
+          <div>
+            <p class="text-sm text-gray-500">Courses</p>
+            <p class="text-xl font-bold">${totalCourses}</p>
+          </div>
+        </div>
 
-        <li class="flex justify-between">
-          <p>New course created: <span class="font-semibold">Math 101</span></p>
-          <span class="text-gray-400 text-sm">1 day ago</span>
-        </li>
-      </ul>
-    </section>
-
-  </main>
-   
-  `;
+        <!-- Users Table -->
+        <section class="bg-white rounded-xl shadow p-6 lg:col-span-4 mt-6">
+          <h2 class="text-xl font-semibold mb-4">All Users</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-left table-auto">
+              <thead class="bg-blue-50 text-primary">
+                <tr>
+                  <th class="px-4 py-3">Name</th>
+                  <th class="px-4 py-3">Email</th>
+                  <th class="px-4 py-3">Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${users
+                  .map(
+                    (u) => `
+                  <tr class="border-b border-gray-200">
+                    <td class="px-4 py-3">${u.Name || "N/A"}</td>
+                    <td class="px-4 py-3">${u.email || "N/A"}</td>
+                    <td class="px-4 py-3">${u.role || "N/A"}</td>
+                  </tr>
+                `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    `;
+  } catch (error) {
+    console.error("Error loading admin dashboard:", error);
+    const content = document.querySelector("#dashboardContent");
+    if (content)
+      content.innerHTML = `<p class="text-center text-red-500">Failed to load dashboard.</p>`;
+  }
 });

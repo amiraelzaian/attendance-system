@@ -39,20 +39,21 @@ const documentExists = async (collectionName, docId) => {
 /* ================ USERS ================ */
 
 //create new account
+// createUser
 export const createUser = async (id = null, data) => {
   try {
-    // Validation
     if (!data.name || !data.email || !data.role) {
       throw new Error("Missing required fields: name, email, role");
     }
 
     const userId = id || generateId("user");
+    const userCourses = Array.isArray(data.courses) ? data.courses : [];
 
     await setDoc(doc(db, "users", userId), {
-      Name: data.name,
+      name: data.name,
       role: data.role,
       email: data.email.toLowerCase(),
-      courses: data.courses || [],
+      courses: userCourses,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -61,6 +62,38 @@ export const createUser = async (id = null, data) => {
     return userId;
   } catch (error) {
     handleError("createUser", error);
+  }
+};
+
+// getAllUsers
+export const getAllUsers = async (limitCount = 50, lastDoc = null) => {
+  try {
+    const usersRef = collection(db, "users");
+    let q = query(usersRef, orderBy("createdAt", "desc"), limit(limitCount));
+    if (lastDoc) q = query(q, startAfter(lastDoc));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) return { users: [], lastVisible: null, hasMore: false };
+
+    const users = snapshot.docs.map((doc) => {
+      const d = doc.data();
+      return {
+        id: doc.id,
+        name: d.name || "",
+        email: d.email || "",
+        role: d.role || "student",
+        courses: Array.isArray(d.courses) ? d.courses : [],
+        createdAt: d.createdAt || null,
+      };
+    });
+
+    return {
+      users,
+      lastVisible: snapshot.docs[snapshot.docs.length - 1],
+      hasMore: snapshot.docs.length === limitCount,
+    };
+  } catch (error) {
+    handleError("getAllUsers", error);
   }
 };
 
@@ -79,39 +112,6 @@ export const getUser = async (id) => {
     return { id: docSnap.id, ...docSnap.data() };
   } catch (error) {
     handleError("getUser", error);
-  }
-};
-
-/**
- * جلب كل المستخدمين مع pagination
- */
-export const getAllUsers = async (limitCount = 50, lastDoc = null) => {
-  try {
-    let q = query(
-      collection(db, "users"),
-      orderBy("createdAt", "desc"),
-      limit(limitCount)
-    );
-
-    if (lastDoc) {
-      q = query(q, startAfter(lastDoc));
-    }
-
-    const snapshot = await getDocs(q);
-    const users = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-
-
-    //
-    return {
-      users,
-      lastVisible: snapshot.docs[snapshot.docs.length - 1],
-      hasMore: snapshot.docs.length === limitCount,
-    };
-  } catch (error) {
-    handleError("getAllUsers", error);
   }
 };
 
@@ -166,9 +166,7 @@ export const createCourse = async (id = null, data) => {
     if (!data.CId || !data.Name || !data.department) {
       throw new Error("Missing required fields: CId, Name, department");
     }
-
     const courseId = id || generateId("course");
-
     await setDoc(doc(db, "courses", courseId), {
       CId: data.CId,
       Name: data.Name,
@@ -176,11 +174,18 @@ export const createCourse = async (id = null, data) => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-
-    console.log(` Course created: ${courseId}`);
     return courseId;
   } catch (error) {
     handleError("createCourse", error);
+  }
+};
+
+export const getAllCourses = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "courses"));
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getAllCourses", error);
   }
 };
 
@@ -196,15 +201,6 @@ export const getCourse = async (id) => {
 };
 
 // get all courses
-export const getAllCourses = async () => {
-  try {
-    const colRef = collection(db, "courses");
-    const snapshot = await getDocs(colRef);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getAllCourses", error);
-  }
-};
 
 // get courses by department
 export const getCoursesByDepartment = async (departmentId) => {
@@ -251,23 +247,26 @@ export const deleteCourse = async (id) => {
 //create a new department
 export const createDepartment = async (id = null, data) => {
   try {
-    if (!data.dName) {
-      throw new Error("Missing required field: dName");
-    }
-
+    if (!data.dName) throw new Error("Missing required field: dName");
     const deptId = id || generateId("dept");
-
     await setDoc(doc(db, "departments", deptId), {
       dName: data.dName,
       departmentId: deptId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-
-    console.log(` Department created: ${deptId}`);
     return deptId;
   } catch (error) {
     handleError("createDepartment", error);
+  }
+};
+
+export const getAllDepartments = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "departments"));
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getAllDepartments", error);
   }
 };
 
@@ -279,17 +278,6 @@ export const getDepartment = async (id) => {
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
     handleError("getDepartment", error);
-  }
-};
-
-// get all departments
-export const getAllDepartments = async () => {
-  try {
-    const colRef = collection(db, "departments");
-    const snapshot = await getDocs(colRef);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getAllDepartments", error);
   }
 };
 
@@ -320,7 +308,6 @@ export const deleteDepartment = async (id) => {
 
 /* ================ ATTENDANCE ================ */
 
-//maark attendance for a student in a course
 export const markAttendance = async (id = null, data) => {
   try {
     if (!data.course || !data.student || !data.status) {
@@ -328,17 +315,29 @@ export const markAttendance = async (id = null, data) => {
     }
 
     const attId = id || generateId("att");
-
     await setDoc(doc(db, "attendance", attId), {
       ...data,
       date: data.date || serverTimestamp(),
       createdAt: serverTimestamp(),
     });
 
-    console.log(` Attendance marked: ${attId}`);
     return attId;
   } catch (error) {
     handleError("markAttendance", error);
+  }
+};
+
+export const getStudentAttendance = async (studentId) => {
+  try {
+    const q = query(
+      collection(db, "attendance"),
+      where("student", "==", doc(db, "users", studentId)),
+      orderBy("date", "desc")
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getStudentAttendance", error);
   }
 };
 
@@ -393,22 +392,6 @@ export const getCourseAttendance = async (courseId) => {
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     handleError("getCourseAttendance", error);
-  }
-};
-
-// get attendance records by student
-export const getStudentAttendance = async (studentId) => {
-  try {
-    const studentRef = doc(db, "users", studentId);
-    const q = query(
-      collection(db, "attendance"),
-      where("student", "==", studentRef),
-      orderBy("date", "desc")
-    );
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getStudentAttendance", error);
   }
 };
 
@@ -484,22 +467,32 @@ export const createNotification = async (id = null, data) => {
     if (!data.title || !data.message || !data.user) {
       throw new Error("Missing required fields: title, message, user");
     }
-
     const notifId = id || generateId("notif");
-
     await setDoc(doc(db, "notifications", notifId), {
       title: data.title,
       message: data.message,
       user: data.user,
-      read: data.read || false,
+      read: false,
       date: data.date || serverTimestamp(),
       createdAt: serverTimestamp(),
     });
-
-    console.log(` Notification created: ${notifId}`);
     return notifId;
   } catch (error) {
     handleError("createNotification", error);
+  }
+};
+
+export const getNotificationsForUser = async (userId) => {
+  try {
+    const q = query(
+      collection(db, "notifications"),
+      where("user", "==", doc(db, "users", userId)),
+      orderBy("date", "desc")
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getNotificationsForUser", error);
   }
 };
 
@@ -541,27 +534,6 @@ export const getNotification = async (id) => {
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
     handleError("getNotification", error);
-  }
-};
-
-// get notifications for a user
-export const getNotificationsForUser = async (userId, unreadOnly = false) => {
-  try {
-    const userRef = doc(db, "users", userId);
-    let q = query(
-      collection(db, "notifications"),
-      where("user", "==", userRef),
-      orderBy("date", "desc")
-    );
-
-    if (unreadOnly) {
-      q = query(q, where("read", "==", false));
-    }
-
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getNotificationsForUser", error);
   }
 };
 
