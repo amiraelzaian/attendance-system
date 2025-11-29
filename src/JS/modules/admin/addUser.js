@@ -52,7 +52,7 @@ function submitForm() {
 
 // event handle
 closePopUp.addEventListener("click", ()=>{
-    console.log("close button clicked");
+    // console.log("close button clicked");
     hidePopup();
 });
 addUserButton.addEventListener("click", function (){

@@ -1,341 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Users Management</title>
 
-    <!-- Fontawesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users Management</title>
 
-    <!-- JavaScript files -->
-    <script type="module" src="../../JS/main.js" defer></script>
-    <!-- <script type="module" src="../../JS/modules/admin/usersManagement.js"></script> -->
-    <!-- OR if you want to keep the old name: -->
-    <script
-      type="module"
-      src="../../JS/modules/admin/adminDashboard.js"
-    ></script>
+  <!-- Fontawesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script
-      defer
-      type="module"
-      src="../../JS/modules/student/dashboard.js"
-    ></script>
-    <script defer type="module" src="../../JS/componentsJS/header.js"></script>
-    <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
-    <script
-      defer
-      type="module"
-      src="../../JS/modules/admin/addUser.js"
-    ></script>
-  </head>
+  <!-- JavaScript files -->
+  <script type="module" src="../../JS/main.js" defer></script>
+  <!-- <script type="module" src="../../JS/modules/admin/usersManagement.js"></script> -->
+  <!-- OR if you want to keep the old name: -->
+  <script type="module" src="../../JS/modules/admin/adminDashboard.js"></script>
 
-  <body>
-    <!-- Overlay for menue bar -->
-    <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
+  <script defer type="module" src="../../JS/modules/student/dashboard.js"></script>
+  <script defer type="module" src="../../JS/componentsJS/header.js"></script>
+  <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+  <script defer type="module" src="../../JS/modules/admin/addUser.js"></script>
+</head>
 
-    <!-- Header -->
-    <div id="header"></div>
+<body>
+  <!-- Overlay for menue bar -->
+  <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
 
-    <main class="h-dvh grid grid-cols-1 lg:grid-cols-5">
-      <!-- Sidebar -->
-      <div id="sidebar"></div>
+  <!-- Header -->
+  <div id="header"></div>
 
-      <!-- Dashboard Content -->
-      <section
-        class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
-      >
-        <!-- Title -->
-        <div class="mb-8">
-          <h1 class="text-2xl text-primary font-semibold">Users</h1>
-          <p class="text-sm text-gray-500">Home / Users</p>
-        </div>
+  <main class="h-dvh grid grid-cols-1 lg:grid-cols-5">
+    <!-- Sidebar -->
+    <div id="sidebar"></div>
 
-        <main class="p-0 md:p-6">
-          <!-- Add user button -->
-          <button
-            class="admin--addUser bg-blue-600 text-white px-4 py-2 mb-6 rounded-lg shadow hover:bg-blue-700 transition"
-          >
-            <i class="fa-solid fa-plus mr-2"></i>Add User
-          </button>
+    <!-- Dashboard Content -->
+    <section class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen">
+      <!-- Title -->
+      <div class="mb-8">
+        <h1 class="text-2xl text-primary font-semibold">Users</h1>
+        <p class="text-sm text-gray-500">Home / Users</p>
+      </div>
 
-          <!-- adding user  -->
-          <div
-            class="addUser-overlay hidden fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] z-10"
-          ></div>
-          <div
-            class="popup hidden -translate-x-1/2 -translate-y-1/2 fixed top-[50%] left-[50%] bg-white p-5 rounded-md z-20 w-[360px]"
-          >
-            <h2 class="text-center text-2xl text-primary font-semibold">
-              Add User
-            </h2>
-            <form class="add-user-form">
-              <label
-                for="role"
-                class="role-label block text-primary font-semibold pb-2"
-                >Role:</label
-              >
+      <main class="p-0 md:p-6">
+        <!-- Add user button -->
+        <button
+          class="admin--addUser bg-primary text-white px-4 py-2 mb-6 rounded-lg shadow hover:bg-blue-700 transition">
+          <i class="fa-solid fa-plus mr-2"></i>Add User
+        </button>
 
-              <!-- Toggle Buttons -->
-              <div class="mb-2">
-                <div class="flex gap-4">
-                  <!-- instructor -->
-                  <label class="flex items-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      class="size-3 md:size-4 accent-blue-600"
-                      value="instructor"
-                      name="role"
-                      required
-                    />
-                    <span class="text-gray-700">Instructor</span>
-                  </label>
-                  <!-- Student -->
-                  <label class="flex items-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      class="size-3 md:size-4 accent-blue-600"
-                      value="student"
-                      name="role"
-                    />
-                    <span class="text-gray-700">Student</span>
-                  </label>
-                </div>
+        <!-- adding user  -->
+        <div class="addUser-overlay hidden fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] z-10"></div>
+        <div
+          class="popup hidden -translate-x-1/2 -translate-y-1/2 fixed top-[50%] left-[50%] bg-white p-5 rounded-md z-20 w-[360px]">
+          <h2 class="text-center text-2xl text-primary font-semibold">
+            Add User
+          </h2>
+          <form class="add-user-form">
+            <label for="role" class="role-label block text-primary font-semibold pb-2">Role:</label>
+
+            <!-- Toggle Buttons -->
+            <div class="mb-2">
+              <div class="flex gap-4">
+                <!-- instructor -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="instructor" name="role"
+                    required />
+                  <span class="text-gray-700">Instructor</span>
+                </label>
+                <!-- Student -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="student" name="role" />
+                  <span class="text-gray-700">Student</span>
+                </label>
               </div>
-              <label
-                for="username"
-                class="username-label block text-primary font-semibold pb-2"
-                >Username:</label
-              >
-              <input
-                class="username-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
-                type="text"
-                id="username"
-                name="username"
-                placeholder=" Enter the username"
-                required
-              />
-              <label
-                for="email"
-                class="email-label block text-primary font-semibold pb-2"
-                >Email:</label
-              >
-              <input
-                class="email-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
-                type="email"
-                id="email"
-                name="email"
-                placeholder=" Enter a valid E-mail"
-                required
-              />
+            </div>
+            <label for="username" class="username-label block text-primary font-semibold pb-2">Username:</label>
+            <input
+              class="username-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+              type="text" id="username" name="username" placeholder=" Enter the username" required />
+            <label for="email" class="email-label block text-primary font-semibold pb-2">Email:</label>
+            <input
+              class="email-input mb-3 w-full h-10 rounded-md border-[#012970] focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+              type="email" id="email" name="email" placeholder=" Enter a valid E-mail" required />
 
-              <label
-                for="role"
-                class="role-label block text-primary font-semibold pb-2"
-                >Departement:</label
-              >
-              <!-- Toggle Buttons -->
-              <div class="mb-3">
-                <div class="flex gap-4">
-                  <!-- CS -->
-                  <label class="flex items-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      class="size-3 md:size-4 accent-blue-600"
-                      value="cs"
-                      name="department"
-                      required
-                    />
-                    <span class="text-gray-700">CS</span>
-                  </label>
-                  <!-- IT -->
-                  <label class="flex items-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      class="size-3 md:size-4 accent-blue-600"
-                      value="it"
-                      name="department"
-                    />
-                    <span class="text-gray-700">IT</span>
-                  </label>
-                  <!-- IS -->
-                  <label class="flex items-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      class="size-3 md:size-4 accent-blue-600"
-                      value="is"
-                      name="department"
-                    />
-                    <span class="text-gray-700">IS</span>
-                  </label>
-                </div>
+            <label for="role" class="role-label block text-primary font-semibold pb-2">Departement:</label>
+            <!-- Toggle Buttons -->
+            <div class="mb-3">
+              <div class="flex gap-4">
+                <!-- CS -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="cs" name="department" required />
+                  <span class="text-gray-700">CS</span>
+                </label>
+                <!-- IT -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="it" name="department" />
+                  <span class="text-gray-700">IT</span>
+                </label>
+                <!-- IS -->
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" class="size-3 md:size-4 accent-blue-600" value="is" name="department" />
+                  <span class="text-gray-700">IS</span>
+                </label>
               </div>
+            </div>
 
-              <div class="relative w-64">
-                <!-- Button -->
-                <button
-                  id="dropdownBtn"
-                  class="w-full px-3 py-2 border border-gray-400 rounded-md bg-white flex items-center justify-between"
-                >
-                  <span id="dropdownLabel">Select courses</span>
-                  <span
-                    id="arrowIcon"
-                    class="transition-transform duration-200"
-                  >
-                    ▼
-                  </span>
-                </button>
-
-                <!-- Dropdown menu -->
-                <div
-                  id="dropdownMenu"
-                  class="absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow hidden max-h-48 overflow-y-auto p-3 z-10"
-                >
-                  <label class="flex items-center gap-2 mb-2">
-                    <input
-                      type="checkbox"
-                      value="ComputerArchitecture"
-                      class="course-checkbox"
-                    />
-                    ComputerArchitecture
-                  </label>
-
-                  <label class="flex items-center gap-2 mb-2">
-                    <input
-                      type="checkbox"
-                      value="DataStructures"
-                      class="course-checkbox"
-                    />
-                    DataStructures
-                  </label>
-
-                  <label class="flex items-center gap-2 mb-2">
-                    <input
-                      type="checkbox"
-                      value="Algorithms"
-                      class="course-checkbox"
-                    />
-                    Algorithms
-                  </label>
-
-                  <label class="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      value="Databases"
-                      class="course-checkbox"
-                    />
-                    Databases
-                  </label>
-                </div>
-              </div>
-
-              <!-- Selected items (tags) -->
-              <div id="selectedTags" class="flex flex-wrap gap-2 mt-3"></div>
-
-              <!-- for making choosing a course required  -->
-              <input
-                type="text"
-                id="coursesHidden"
-                name="courses"
-                class="hidden"
-                required
-              />
-
-              <button
-                type="submit"
-                class="submit-button mt-5 block bg-[#012970] text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e]"
-              >
-                Add
+            <div class="relative w-64">
+              <!-- Button -->
+              <button id="dropdownBtn"
+                class="w-full px-3 py-2 border border-gray-400 rounded-md bg-white flex items-center justify-between">
+                <span id="dropdownLabel">Select courses</span>
+                <span id="arrowIcon" class="transition-transform duration-200">
+                  ▼
+                </span>
               </button>
 
-              <a
-                href="#"
-                class="close-btn block mt-4 bg-[#86211a] text-center text-white p-2 rounded-md no-underline hover:bg-[#bb1e1e]"
-                >Close</a
-              >
-            </form>
-          </div>
-          <!-- Users Table Wrapper -->
-          <div
-            class="bg-white rounded-xl shadow overflow-x-auto md:overflow-x-visible"
-          >
-            <table
-              class="min-w-full text-left text-xs md:text-sm table-auto md:table-fixed block md:table"
-            >
-              <thead
-                class="bg-blue-50 text-primary hidden md:table-header-group"
-              >
-                <tr>
-                  <th class="px-4 py-3 whitespace-nowrap">Name</th>
-                  <th class="px-4 py-3 whitespace-nowrap">Email</th>
-                  <th class="px-4 py-3 whitespace-nowrap">Role</th>
-                  <th class="px-4 py-3 whitespace-nowrap text-center">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+              <!-- Dropdown menu -->
+              <div id="dropdownMenu"
+                class="absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow hidden max-h-48 overflow-y-auto p-3 z-10">
+                <label class="flex items-center gap-2 mb-2">
+                  <input type="checkbox" value="ComputerArchitecture" class="course-checkbox" />
+                  ComputerArchitecture
+                </label>
 
-              <tbody class="text-gray-700 block md:table-row-group">
-                <tr
-                  class="border-b border-gray-200 hover:bg-gray-50 block md:table-row p-3 md:p-0"
-                >
-                  <td class="px-4 py-3 block md:table-cell">
-                    <span class="font-semibold md:hidden">Name: </span>Ahmed Ali
-                  </td>
-                  <td class="px-4 py-3 block md:table-cell">
-                    <span class="font-semibold md:hidden">Email: </span
-                    >ahmed@email.com
-                  </td>
-                  <td class="px-4 py-3 block md:table-cell">
-                    <span class="font-semibold md:hidden">Role: </span>Student
-                  </td>
-                  <td
-                    class="px-4 py-3 flex justify-center md:table-cell md:text-center"
-                  >
-                    <button class="delete-btn">
-                      <i
-                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"
-                      ></i>
-                    </button>
-                  </td>
-                </tr>
+                <label class="flex items-center gap-2 mb-2">
+                  <input type="checkbox" value="DataStructures" class="course-checkbox" />
+                  DataStructures
+                </label>
 
-                <tr
-                  class="border-b border-gray-200 hover:bg-gray-50 block md:table-row p-3 md:p-0"
-                >
-                  <td class="px-4 py-3 block md:table-cell">
-                    <span class="font-semibold md:hidden">Name: </span>Mona
-                    Salah
-                  </td>
-                  <td class="px-4 py-3 block md:table-cell">
-                    <span class="font-semibold md:hidden">Email: </span
-                    >mona@email.com
-                  </td>
-                  <td class="px-4 py-3 block md:table-cell">
-                    <span class="font-semibold md:hidden">Role: </span
-                    >Instructor
-                  </td>
-                  <td
-                    class="px-4 py-3 flex justify-center gap-4 md:table-cell md:text-center"
-                  >
-                    <button class="delete-btn">
-                      <i
-                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"
-                      ></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </main>
-      </section>
-    </main>
-  </body>
+                <label class="flex items-center gap-2 mb-2">
+                  <input type="checkbox" value="Algorithms" class="course-checkbox" />
+                  Algorithms
+                </label>
+
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" value="Databases" class="course-checkbox" />
+                  Databases
+                </label>
+              </div>
+            </div>
+
+            <!-- Selected items (tags) -->
+            <div id="selectedTags" class="flex flex-wrap gap-2 mt-3"></div>
+
+            <!-- for making choosing a course required  -->
+            <input type="text" id="coursesHidden" name="courses" class="hidden" required />
+
+            <button type="submit"
+              class="submit-button mt-5 block bg-[#012970] text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e]">
+              Add
+            </button>
+
+            <a href="#"
+              class="close-btn block mt-4 bg-[#86211a] text-center text-white p-2 rounded-md no-underline hover:bg-[#bb1e1e]">Close</a>
+          </form>
+        </div>
+
+        <!-- Users Table Wrapper -->
+        <div class="bg-white rounded-xl shadow overflow-x-auto md:overflow-x-visible">
+          <table class="min-w-full text-left text-xs md:text-sm table-auto md:table-fixed block md:table">
+            <thead class="bg-blue-50 text-primary hidden md:table-header-group">
+              <tr>
+                <th class="px-4 py-3 whitespace-nowrap">Name</th>
+                <th class="px-4 py-3 whitespace-nowrap">Email</th>
+                <th class="px-4 py-3 whitespace-nowrap">Role</th>
+                <th class="px-4 py-3 whitespace-nowrap text-center">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="text-gray-700 block md:table-row-group">
+              <tr class="border-b border-gray-200 hover:bg-gray-50 block md:table-row p-3 md:p-0">
+                <td class="px-4 py-3 block md:table-cell">
+                  <span class="font-semibold md:hidden">Name: </span>Ahmed Ali
+                </td>
+                <td class="px-4 py-3 block md:table-cell">
+                  <span class="font-semibold md:hidden">Email: </span>ahmed@email.com
+                </td>
+                <td class="px-4 py-3 block md:table-cell">
+                  <span class="font-semibold md:hidden">Role: </span>Student
+                </td>
+                <td class="px-4 py-3 flex justify-center md:table-cell md:text-center">
+                  <button class="delete-btn">
+                    <i class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"></i>
+                  </button>
+                </td>
+              </tr>
+
+              <tr class="border-b border-gray-200 hover:bg-gray-50 block md:table-row p-3 md:p-0">
+                <td class="px-4 py-3 block md:table-cell">
+                  <span class="font-semibold md:hidden">Name: </span>Mona
+                  Salah
+                </td>
+                <td class="px-4 py-3 block md:table-cell">
+                  <span class="font-semibold md:hidden">Email: </span>mona@email.com
+                </td>
+                <td class="px-4 py-3 block md:table-cell">
+                  <span class="font-semibold md:hidden">Role: </span>Instructor
+                </td>
+                <td class="px-4 py-3 flex justify-center gap-4 md:table-cell md:text-center">
+                  <button class="delete-btn">
+                    <i class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </section>
+  </main>
+</body>
+
 </html>
