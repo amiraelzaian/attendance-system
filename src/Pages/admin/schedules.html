@@ -60,10 +60,70 @@
         <!-- Add Schedule Button -->
         <button
           id="addScheduleBtn"
-          class="bg-primary text-white px-4 py-2 rounded-lg mb-6"
+          class="bg-btn text-white px-4 py-2 rounded-lg mb-6"
         >
           <i class="fa-solid fa-plus mr-2"></i>Add Schedule
         </button>
+
+        <!-- Add Schedule Popup (fixed parent + overlay + centered box using flex) -->
+        <div
+          id="schedulePopup"
+          class="hidden fixed inset-0 z-50 flex items-center justify-center"
+        >
+          <!-- Overlay -->
+          <div
+            id="scheduleOverlay"
+            class="absolute inset-0 bg-[rgba(0,0,0,0.5)]"
+          ></div>
+
+          <!-- Popup Box (centered by parent flex) -->
+          <div
+            class="popup relative z-10 bg-white p-6 rounded-md w-[90%] sm:w-96 md:w-[600px] max-h-[90vh] overflow-auto"
+          >
+            <h2 class="text-center text-2xl text-primary font-semibold mb-5">
+              Add Schedule
+            </h2>
+
+            <form id="addScheduleForm" class="space-y-3">
+              <label class="block text-primary font-semibold pb-1"
+                >Course Name:</label
+              >
+              <input
+                type="text"
+                id="scheduleName"
+                class="w-full h-10 rounded-md border border-gray-300 px-3 focus:ring-1 focus:ring-blue-700 focus:border-transparent focus:outline-none"
+                placeholder="Enter the course name"
+                required
+              />
+
+              <label class="block text-primary font-semibold pb-1"
+                >Upload Image:</label
+              >
+              <input
+                type="file"
+                id="scheduleImage"
+                accept="image/*"
+                class="w-full"
+              />
+
+              <button
+                id="saveSchedule"
+                type="submit"
+                class="block bg-btn text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e] mt-3"
+              >
+                Save
+              </button>
+
+              <a
+                id="closePopup"
+                href="#"
+                class="block mt-3 bg-red-500 text-center text-white p-2 rounded-md no-underline hover:bg-[#bb1e1e]"
+              >
+                Close
+              </a>
+            </form>
+          </div>
+        </div>
 
         <!-- Schedules Table -->
         <div class="bg-white rounded-xl shadow overflow-hidden">
@@ -80,37 +140,5 @@
         </div>
       </section>
     </main>
-
-    <!-- Add Schedule Popup -->
-    <div
-      id="schedulePopup"
-      class="hidden fixed inset-0 bg-black/30 z-50 flex justify-center items-center"
-    >
-      <div class="bg-white rounded-xl p-6 w-96 relative">
-        <h2 class="text-xl font-semibold mb-4">Add Schedule</h2>
-
-        <label class="block mb-2">Course Name:</label>
-        <input
-          type="text"
-          id="scheduleName"
-          class="border w-full p-2 mb-4 rounded"
-        />
-
-        <label class="block mb-2">Upload Image:</label>
-        <input type="file" id="scheduleImage" accept="image/*" class="mb-4" />
-
-        <div class="flex justify-end gap-3">
-          <button id="closePopup" class="px-4 py-2 bg-gray-300 rounded">
-            Cancel
-          </button>
-          <button
-            id="saveSchedule"
-            class="px-4 py-2 bg-green-600 text-white rounded"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
   </body>
 </html>

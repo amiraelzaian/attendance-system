@@ -10,6 +10,7 @@ import {
 // DOM Elements
 const addBtn = document.getElementById("addScheduleBtn");
 const popup = document.getElementById("schedulePopup");
+const overlay = document.getElementById("scheduleOverlay");
 const closePopupBtn = document.getElementById("closePopup");
 const saveBtn = document.getElementById("saveSchedule");
 const scheduleNameInput = document.getElementById("scheduleName");
@@ -17,9 +18,12 @@ const scheduleImageInput = document.getElementById("scheduleImage");
 const tbody = document.querySelector("tbody");
 
 // Open / Close Popup
-addBtn.addEventListener("click", () => popup.classList.remove("hidden"));
+addBtn.addEventListener("click", function () {
+  popup.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+});
 closePopupBtn.addEventListener("click", () => popup.classList.add("hidden"));
-
+overlay.addEventListener("click", () => popup.classList.add("hidden"));
 // Upload image to Cloudinary
 async function uploadToCloudinary(file) {
   const formData = new FormData();

@@ -19,6 +19,9 @@
   .delete-btn {
     @apply hover:bg-red-100 transition-all duration-300 p-1 w-full rounded-lg;
   }
+  .overlay {
+    @apply hidden fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] z-10;
+  }
 }
 
 ::-webkit-scrollbar {
