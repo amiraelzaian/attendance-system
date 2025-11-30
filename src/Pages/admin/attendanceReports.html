@@ -51,12 +51,12 @@
         </div>
         <!-- Content -->
         <main class="p-0 md:p-6">
-          <button class="bg-green-600 text-white px-4 py-2 rounded-lg mb-6">
-            <i class="fa-solid fa-file-excel mr-2"></i>Export Excel
-          </button>
+         <button id="exportExcelBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg mb-6">
+          <i class="fa-solid fa-file-excel mr-2"></i>Export Excel
+         </button>
 
           <div class="bg-white rounded-xl shadow overflow-auto">
-            <table class="w-full">
+            <table class="w-full" id="attendanceTable">
               <thead class="bg-blue-50">
                 <tr>
                   <th class="px-4 py-3">Student</th>
@@ -81,5 +81,6 @@
         </main>
       </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
   </body>
 </html>
