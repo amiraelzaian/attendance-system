@@ -1,3 +1,5 @@
+import { getCurrentUser } from "../firebase/auth-state.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const sidebarEl = document.querySelector("#sidebar");
   if (!sidebarEl) return;
@@ -15,7 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 export const detectSidebar = function () {
-  const role = localStorage.getItem("role"); // "student" or "instructor"
+  const currentUser = getCurrentUser();
+  const role = currentUser.role;
 
   // STUDENT SIDEBAR
   const studentSidebar = `

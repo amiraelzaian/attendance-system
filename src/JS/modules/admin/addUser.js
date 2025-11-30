@@ -1,162 +1,152 @@
-'use strict';
-const addUserButton = document.querySelector(".admin--addUser");
-const overlay = document.querySelector(".addUser-overlay");
-const closePopUp = document.querySelector(".close-btn");
-const submitButton = document.querySelector(".submit-button");
-const popUp = document.querySelector(".popup");
-const AddUserForm = document.querySelector(".add-user-form");
+"use strict";
 
+import {
+  createUser,
+  getAllUsers,
+  updateUser,
+  getAllDepartments,
+  getAllCourses,
+  getUserById,
+} from "../../firebase/firebase-helper.js";
+import { renderUsers } from "./adminDashboard.js";
 
+console.log("✅ addUser.js loaded");
 
-const checkBoxes = document.querySelectorAll(".course-checkbox");
-const coursesHidden = document.getElementById("coursesHidden");
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("✅ DOM Content Loaded");
 
-checkBoxes.forEach(cb => {
-  cb.addEventListener("change", () => {
-    const selected = [...checkBoxes]
-      .filter(c => c.checked)
-      .map(c => c.value);
+  const addUserButton = document.querySelector(".admin--addUser");
+  const overlay = document.querySelector(".addUser-overlay");
+  const closePopUp = document.querySelector(".close-btn");
+  const popUp = document.querySelector(".popup");
+  const AddUserForm = document.querySelector(".add-user-form");
+  const usernameInput = document.getElementById("username");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const departmentSelect = document.getElementById("departmentSelect");
+  const coursesSelect = document.getElementById("coursesSelect");
+  const submitBtn = document.querySelector(".submit-button");
 
-    coursesHidden.value = selected.join(","); // store in hidden input
-  });
-});
+  if (!addUserButton || !overlay || !popUp) return;
 
-// functions
-function showPopup() {
+  function showPopup() {
     overlay.classList.remove("hidden");
-    popUp.classList.remove("hidden")
-}
+    popUp.classList.remove("hidden");
+  }
 
-function hidePopup() {
+  function hidePopup() {
     overlay.classList.add("hidden");
     popUp.classList.add("hidden");
     AddUserForm.reset();
-
-    // Reset dropdown
-    checkboxes.forEach(cb => cb.checked = false); // uncheck all
-    updateTags(); // clear selected tags and reset placeholder
-    dropdownMenu.classList.add("hidden"); // close dropdown
-    arrowIcon.classList.remove("rotate-180"); // reset arrow
-}
-
-function submitForm() {
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-
-    // Handle form submission logic here
-    console.log('User Added:', { username, email });
-
-    // Close the popup after submission
-    hidePopup();
-}
-
-// event handle
-closePopUp.addEventListener("click", ()=>{
-    console.log("close button clicked");
-    hidePopup();
-});
-addUserButton.addEventListener("click", function (){
-    // console.log("add user clicked");
-    showPopup();
-});
-
-overlay.addEventListener("click",()=>hidePopup());
-
-// submitButton.addEventListener("click", ()=>{
-//     console.log("submit button clicked");
-//     submitForm();
-// });
-AddUserForm.addEventListener("submit", (e) => {
-    e.preventDefault(); // prevent reload
-
-    const username = document.getElementById("username");
-    const email = document.getElementById("email");
-
-    if (!username.value.trim() || !email.value.trim()) {
-        alert("Please fill in all required fields.");
-        return;
-    }
-
-    if (!email.checkValidity()) {
-        alert("Please enter a valid email.");
-        return;
-    }
-
-    if (coursesHidden.value.trim() === "") {
-    alert("Please select at least one course.");
-    return;
-}
-
-
-    submitForm();
-});
-
-
-
-const dropdownBtn = document.getElementById("dropdownBtn");
-const dropdownMenu = document.getElementById("dropdownMenu");
-const selectedTags = document.getElementById("selectedTags");
-const checkboxes = document.querySelectorAll(".course-checkbox");
-const arrowIcon = document.getElementById("arrowIcon");
-const dropdownLabel = document.getElementById("dropdownLabel");
-
-// Toggle dropdown
-dropdownBtn.addEventListener("click", () => {
-  dropdownMenu.classList.toggle("hidden");
-
-  // Rotate arrow
-  arrowIcon.classList.toggle("rotate-180");
-});
-
-// Update selected tags
-checkboxes.forEach(cb => {
-  cb.addEventListener("change", () => {
-    updateTags();
-  });
-});
-
-function updateTags() {
-  selectedTags.innerHTML = ""; // clear previous
-
-  const selected = Array.from(checkboxes)
-    .filter(cb => cb.checked)
-    .map(cb => cb.value);
-
-  // Update placeholder text
-  dropdownLabel.textContent = selected.length
-  ? `${selected.length} selected`
-  : "Select courses";
-
-  // Make tags
-  selected.forEach(item => {
-    const tag = document.createElement("span");
-    tag.className =
-      "bg-gray-200 px-2 py-1 rounded text-sm inline-flex items-center gap-1";
-
-    tag.innerHTML = `
-      ${item}
-      <button class="text-red-500 font-bold remove-tag" data-value="${item}">×</button>
-    `;
-    selectedTags.appendChild(tag);
-  });
-
-  // Remove tag logic
-  document.querySelectorAll(".remove-tag").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const value = btn.getAttribute("data-value");
-      const checkbox = Array.from(checkboxes).find(cb => cb.value === value);
-      checkbox.checked = false;
-      updateTags();
-    });
-  });
-}
-
-// Close dropdown if clicking outside
-window.addEventListener("click", (e) => {
-  if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-    dropdownMenu.classList.add("hidden");
-    arrowIcon.classList.remove("rotate-180");
+    delete AddUserForm.dataset.updateUserId;
   }
+
+  async function loadDepartments() {
+    const departments = await getAllDepartments();
+    departmentSelect.innerHTML =
+      `<option value="">Select department</option>` +
+      departments
+        .map((d) => `<option value="${d.id}">${d.dName}</option>`)
+        .join("");
+  }
+
+  async function loadCourses() {
+    const courses = await getAllCourses();
+    coursesSelect.innerHTML = courses
+      .map((c) => `<option value="${c.id}">${c.Name}</option>`)
+      .join("");
+  }
+
+  await loadDepartments();
+  await loadCourses();
+
+  addUserButton.addEventListener("click", showPopup);
+  closePopUp.addEventListener("click", (e) => {
+    e.preventDefault();
+    hidePopup();
+  });
+  overlay.addEventListener("click", hidePopup);
+
+  function attachUpdateButtons() {
+    document.querySelectorAll(".update-btn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const tr = e.target.closest("tr");
+        const userId = tr.dataset.userId;
+        const user = await getUserById(userId);
+
+        showPopup();
+        usernameInput.value = user.name;
+        emailInput.value = user.email;
+        passwordInput.value = "";
+        departmentSelect.value = user.department || "";
+
+        Array.from(coursesSelect.options).forEach((opt) => {
+          opt.selected = user.courses.includes(opt.value);
+        });
+
+        AddUserForm.dataset.updateUserId = userId;
+      });
+    });
+  }
+
+  attachUpdateButtons();
+
+  AddUserForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    const department = departmentSelect.value;
+    const courses = Array.from(coursesSelect.selectedOptions).map(
+      (o) => o.value
+    );
+
+    if (
+      !username ||
+      !email ||
+      (!password && !AddUserForm.dataset.updateUserId)
+    ) {
+      alert("⚠️ Please fill required fields.");
+      return;
+    }
+
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = AddUserForm.dataset.updateUserId
+      ? "Updating..."
+      : "Creating...";
+    submitBtn.disabled = true;
+
+    try {
+      if (AddUserForm.dataset.updateUserId) {
+        const userId = AddUserForm.dataset.updateUserId;
+        const updateData = { name: username, department, courses };
+        if (password) updateData.password = password;
+        await updateUser(userId, updateData);
+        alert("✅ User updated successfully!");
+      } else {
+        await createUser({
+          name: username,
+          email,
+          password,
+          department,
+          courses,
+        });
+        alert("✅ User created successfully!");
+      }
+
+      hidePopup();
+      const data = await getAllUsers();
+      if (data && data.users) {
+        renderUsers(data.users);
+        attachUpdateButtons();
+      }
+    } catch (error) {
+      console.error(error);
+      alert("❌ Error submitting form");
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  });
 });
-
-

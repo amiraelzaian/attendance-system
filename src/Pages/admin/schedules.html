@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Schedules Management</title>
 
+    <!-- Style -->
+    <link rel="stylesheet" href="../../style.css" />
+
+    <!-- JS -->
+    <script
+      type="module"
+      src="../../JS/modules/admin/schedules.js"
+      defer
+    ></script>
+
     <!-- Fontawesome -->
     <link
       rel="stylesheet"
@@ -26,9 +36,8 @@
     <script defer type="module" src="../../JS/componentsJS/header.js"></script>
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
   </head>
-
   <body>
-    <!-- Overlay for menue bar -->
+    <!-- Overlay for sidebar -->
     <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
 
     <!-- Header -->
@@ -38,71 +47,97 @@
       <!-- Sidebar -->
       <div id="sidebar"></div>
 
-      <!-- Dashboard Content -->
+      <!-- Main Content -->
       <section
         class="col-span-1 lg:col-span-4 bg-[#F6F9FF] p-10 overflow-auto min-h-screen"
       >
-        <!-- Title -->
+        <!-- Page Title -->
         <div class="mb-8">
           <h1 class="text-2xl text-primary font-semibold">Schedules</h1>
           <p class="text-sm text-gray-500">Home / Schedules</p>
         </div>
 
-        <!-- Content -->
+        <!-- Add Schedule Button -->
+        <button
+          id="addScheduleBtn"
+          class="bg-btn text-white px-4 py-2 rounded-lg mb-6"
+        >
+          <i class="fa-solid fa-plus mr-2"></i>Add Schedule
+        </button>
 
-        <main class="p-0 md:p-6">
-          <button class="bg-primary text-white px-4 py-2 rounded-lg mb-6">
-            <i class="fa-solid fa-plus mr-2"></i>Add Schedule
-          </button>
-
+        <!-- Add Schedule Popup (fixed parent + overlay + centered box using flex) -->
+        <div
+          id="schedulePopup"
+          class="hidden fixed inset-0 z-50 flex items-center justify-center"
+        >
+          <!-- Overlay -->
           <div
-            class="bg-white rounded-xl shadow overflow-clip md:overflow-visible"
+            id="scheduleOverlay"
+            class="absolute inset-0 bg-[rgba(0,0,0,0.5)]"
+          ></div>
+
+          <!-- Popup Box (centered by parent flex) -->
+          <div
+            class="popup relative z-10 bg-white p-6 rounded-md w-[90%] sm:w-96 md:w-[600px] max-h-[90vh] overflow-auto"
           >
-            <table class="w-full text-xs md:text-sm block md:table table-auto">
-              <thead class="bg-blue-50 hidden md:table-header-group">
-                <tr>
-                  <th class="px-4 py-3">Course</th>
-                  <th class="px-4 py-3">Instructor</th>
-                  <th class="px-4 py-3">Day</th>
-                  <th class="px-4 py-3">Time</th>
-                  <th class="px-4 py-3">Actions</th>
-                </tr>
-              </thead>
+            <h2 class="text-center text-2xl text-primary font-semibold mb-5">
+              Add Schedule
+            </h2>
 
-              <tbody class="block md:table-row-group">
-                <tr
-                  class="border-b border-gray-200 block md:table-row p-4 md:p-0 rounded-lg md:rounded-none mb-4 md:mb-0 bg-white md:bg-transparent shadow md:shadow-none"
-                >
-                  <td class="px-4 py-2 block md:table-cell">
-                    <span class="font-semibold md:hidden">Course: </span
-                    >Programming 101
-                  </td>
+            <form id="addScheduleForm" class="space-y-3">
+              <label class="block text-primary font-semibold pb-1"
+                >Course Name:</label
+              >
+              <input
+                type="text"
+                id="scheduleName"
+                class="w-full h-10 rounded-md border border-gray-300 px-3 focus:ring-1 focus:ring-blue-700 focus:border-transparent focus:outline-none"
+                placeholder="Enter the course name"
+                required
+              />
 
-                  <td class="px-4 py-2 block md:table-cell">
-                    <span class="font-semibold md:hidden">Instructor: </span>Dr.
-                    Omar
-                  </td>
+              <label class="block text-primary font-semibold pb-1"
+                >Upload Image:</label
+              >
+              <input
+                type="file"
+                id="scheduleImage"
+                accept="image/*"
+                class="w-full"
+              />
 
-                  <td class="px-4 py-2 block md:table-cell">
-                    <span class="font-semibold md:hidden">Day: </span>Sunday
-                  </td>
+              <button
+                id="saveSchedule"
+                type="submit"
+                class="block bg-btn text-white border-none p-2 rounded-md cursor-pointer text-center w-full hover:bg-[#063e9e] mt-3"
+              >
+                Save
+              </button>
 
-                  <td class="px-4 py-2 block md:table-cell">
-                    <span class="font-semibold md:hidden">Time: </span>10:00 AM
-                  </td>
-
-                  <td class="px-4 py-3 flex gap-4 md:table-cell md:text-center">
-                    <button class="delete-btn">
-                      <i
-                        class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"
-                      ></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <a
+                id="closePopup"
+                href="#"
+                class="block mt-3 bg-red-500 text-center text-white p-2 rounded-md no-underline hover:bg-[#bb1e1e]"
+              >
+                Close
+              </a>
+            </form>
           </div>
-        </main>
+        </div>
+
+        <!-- Schedules Table -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-blue-50">
+              <tr>
+                <th class="px-4 py-3">Course</th>
+                <th class="px-4 py-3">Image</th>
+                <th class="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </section>
     </main>
   </body>

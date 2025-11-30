@@ -11,18 +11,21 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-
     <!-- Style -->
-     <link rel="stylesheet" href="../../style.css">
-
+    <link rel="stylesheet" href="../../style.css" />
     <!-- JavaScript files -->
     <script type="module" src="../../JS/main.js" defer></script>
     <script defer type="module" src="../../JS/componentsJS/header.js"></script>
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
+    <script
+      defer
+      type="module"
+      src="../../JS/modules/instructor/instructorCourses.js"
+    ></script>
   </head>
 
   <body class="overflow-x-hidden">
-    <!-- Overlay for menue bar -->
+    <!-- Overlay for menu bar -->
     <div id="overlay" class="hidden inset-0 absolute bg-black/30 z-20"></div>
     <!-- Header -->
     <div id="header"></div>
@@ -38,19 +41,7 @@
         <h1 class="text-3xl font-bold text-primary mb-6">My Courses</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="bg-white p-5 shadow rounded-xl">
-            <h3 class="font-semibold text-lg text-primary">
-              Web Development
-            </h3>
-            <p class="text-gray-500">42 Students</p>
-          </div>
-
-          <div class="bg-white p-5 shadow rounded-xl">
-            <h3 class="font-semibold text-lg text-primary">
-              Database Systems
-            </h3>
-            <p class="text-gray-500">35 Students</p>
-          </div>
+          <!-- Courses will be injected here dynamically -->
         </div>
       </section>
     </main>

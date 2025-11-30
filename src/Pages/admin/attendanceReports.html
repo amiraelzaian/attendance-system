@@ -21,8 +21,9 @@
     <script
       defer
       type="module"
-      src="../../JS/modules/student/dashboard.js"
+      src="../../JS/modules/admin/attendanceReports.js"
     ></script>
+    <!-- <script type="module" src="" defer></script> -->
     <script defer type="module" src="../../JS/componentsJS/header.js"></script>
     <script defer type="module" src="../../JS/componentsJS/sidebar.js"></script>
   </head>
@@ -51,9 +52,17 @@
         </div>
         <!-- Content -->
         <main class="p-0 md:p-6">
+<<<<<<< HEAD
          <button id="exportExcelBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg mb-6">
           <i class="fa-solid fa-file-excel mr-2"></i>Export Excel
          </button>
+=======
+          <button
+            class="bg-green-600 text-white px-4 py-2 rounded-lg mb-6 hover:bg-green-700 transition"
+          >
+            <i class="fa-solid fa-file-excel mr-2"></i>Export Excel
+          </button>
+>>>>>>> 05a0d7d344252ce4d87b8656e702a4b9f1a78563
 
           <div class="bg-white rounded-xl shadow overflow-auto">
             <table class="w-full" id="attendanceTable">
@@ -67,12 +76,10 @@
               </thead>
 
               <tbody>
-                <tr class="border-b border-gray-200 ">
-                  <td class="px-4 py-3 text-center">Ahmed Ali</td>
-                  <td class="px-4 py-3 text-center">Programming 101</td>
-                  <td class="px-4 py-3 text-center">2025-01-15</td>
-                  <td class="px-4 py-3 text-center text-green-600 font-semibold">
-                    Present
+                <tr class="border-b border-gray-200">
+                  <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+                    <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+                    Loading...
                   </td>
                 </tr>
               </tbody>

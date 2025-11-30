@@ -14,19 +14,16 @@ import {
   orderBy,
   limit,
   startAfter,
+  addDoc,
 } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase.js";
 
 /* ================ HELPER FUNCTIONS ================ */
 
 // generate unique ID
 const generateId = (prefix) => {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-};
-
-// handle Errors
-const handleError = (operation, error) => {
-  console.error(`Error in ${operation}:`, error);
-  throw new Error(`${operation} failed: ${error.message}`);
 };
 
 // check if document exists
@@ -36,86 +33,191 @@ const documentExists = async (collectionName, docId) => {
   return docSnap.exists();
 };
 
+// Error handler function
+const handleError = (functionName, error) => {
+  console.error(`Error in ${functionName}:`, error);
+  throw error;
+};
+
 /* ================ USERS ================ */
 
-//create new account
-export const createUser = async (id = null, data) => {
+// Create new account
+export const createUser = async (data) => {
   try {
     // Validation
-    if (!data.name || !data.email || !data.role) {
-      throw new Error("Missing required fields: name, email, role");
+    if (!data.name || !data.email || !data.password) {
+      throw new Error("Missing required fields: name, email, password");
     }
 
-    const userId = id || generateId("user");
+    console.log("🔵 Creating user in Firebase Auth...");
 
+    // 1. Create user in Firebase Authentication
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      data.email.toLowerCase(),
+      data.password
+    );
+
+    const userId = userCredential.user.uid;
+    console.log("✅ User created in Auth:", userId);
+
+    // 2. Convert courses to references (if needed)
+    // If courses are just IDs, keep them as strings
+    // If you want references, use: doc(db, "courses", courseId)
+    const courses = Array.isArray(data.courses) ? data.courses : [];
+
+    // 3. Convert department to reference (if needed)
+    // If department is just an ID, keep it as string
+    // If you want reference, use: doc(db, "departments", data.department)
+    const department = data.department || "";
+
+    console.log("🔵 Saving user data to Firestore...");
+
+    // 4. Save user data in Firestore
     await setDoc(doc(db, "users", userId), {
-      Name: data.name,
-      role: data.role,
+      name: data.name,
+      role: data.role || "student",
       email: data.email.toLowerCase(),
-      courses: data.courses || [],
+      department: department,
+      courses: courses,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
 
-    console.log(`User created: ${userId}`);
-    return userId;
+    console.log("✅ User data saved to Firestore");
+    return { success: true, userId };
   } catch (error) {
-    handleError("createUser", error);
-  }
-};
+    console.error("❌ Error creating user:", error);
 
-// get single user by ID
-export const getUser = async (id) => {
-  console.log("Fetching user with ID:", id);
-  try {
-    const docRef = doc(db, "users", id);
-    const docSnap = await getDoc(docRef);
+    // Handle specific Firebase errors
+    let errorMessage = "Failed to create user";
 
-    if (!docSnap.exists()) {
-      console.warn(`User not found: ${id}`);
-      return null;
+    if (error.code === "auth/email-already-in-use") {
+      errorMessage = "This email is already registered";
+    } else if (error.code === "auth/weak-password") {
+      errorMessage = "Password must be at least 6 characters";
+    } else if (error.code === "auth/invalid-email") {
+      errorMessage = "Invalid email format";
+    } else if (error.message) {
+      errorMessage = error.message;
     }
 
-    return { id: docSnap.id, ...docSnap.data() };
-  } catch (error) {
-    handleError("getUser", error);
+    return { success: false, error: errorMessage };
   }
 };
 
-/**
- * جلب كل المستخدمين مع pagination
- */
+// Get all users with pagination
 export const getAllUsers = async (limitCount = 50, lastDoc = null) => {
   try {
-    let q = query(
-      collection(db, "users"),
-      orderBy("createdAt", "desc"),
-      limit(limitCount)
-    );
+    const usersRef = collection(db, "users");
+    let q = query(usersRef, orderBy("createdAt", "desc"), limit(limitCount));
 
     if (lastDoc) {
       q = query(q, startAfter(lastDoc));
     }
 
     const snapshot = await getDocs(q);
-    const users = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
 
+    if (snapshot.empty) {
+      return { users: [], lastVisible: null, hasMore: false };
+    }
 
-    //
+    const users = snapshot.docs.map((doc) => {
+      const d = doc.data();
+      return {
+        id: doc.id,
+        name: d.name || "",
+        email: d.email || "",
+        role: d.role || "student",
+        courses: Array.isArray(d.courses) ? d.courses : [],
+        department: d.department || "",
+        createdAt: d.createdAt || null,
+      };
+    });
+
     return {
       users,
       lastVisible: snapshot.docs[snapshot.docs.length - 1],
       hasMore: snapshot.docs.length === limitCount,
     };
   } catch (error) {
-    handleError("getAllUsers", error);
+    console.error("Error in getAllUsers:", error);
+    return { users: [], lastVisible: null, hasMore: false };
   }
 };
 
-// get users by role
+// Get single user by ID
+export const getUserById = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      throw new Error("User not found");
+    }
+
+    return {
+      id: userSnap.id,
+      ...userSnap.data(),
+    };
+  } catch (error) {
+    handleError("getUserById", error);
+    return null;
+  }
+};
+
+// Add new user (alternative to createUser using addDoc)
+export const addUser = async (userData) => {
+  try {
+    const usersRef = collection(db, "users");
+    const newUser = {
+      ...userData,
+      email: userData.email?.toLowerCase() || "",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(usersRef, newUser);
+    return {
+      id: docRef.id,
+      ...newUser,
+    };
+  } catch (error) {
+    handleError("addUser", error);
+    return null;
+  }
+};
+
+// Update user
+export const updateUser = async (userId, userData) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      ...userData,
+      updatedAt: serverTimestamp(),
+    });
+    console.log(`User updated: ${userId}`);
+    return true;
+  } catch (error) {
+    handleError("updateUser", error);
+    return false;
+  }
+};
+
+// Delete user
+export const deleteUser = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    await deleteDoc(userRef);
+    console.log(`User deleted: ${userId}`);
+    return true;
+  } catch (error) {
+    handleError("deleteUser", error);
+    return false;
+  }
+};
+
+// Get users by role
 export const getUsersByRole = async (role) => {
   try {
     const q = query(
@@ -127,48 +229,19 @@ export const getUsersByRole = async (role) => {
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     handleError("getUsersByRole", error);
-  }
-};
-
-// update user
-export const updateUser = async (id, data) => {
-  try {
-    const exists = await documentExists("users", id);
-    if (!exists) throw new Error(`User not found: ${id}`);
-
-    const docRef = doc(db, "users", id);
-    await updateDoc(docRef, {
-      ...data,
-      updatedAt: serverTimestamp(),
-    });
-
-    console.log(` User updated: ${id}`);
-  } catch (error) {
-    handleError("updateUser", error);
-  }
-};
-// delete user
-export const deleteUser = async (id) => {
-  try {
-    const docRef = doc(db, "users", id);
-    await deleteDoc(docRef);
-    console.log(` User deleted: ${id}`);
-  } catch (error) {
-    handleError("deleteUser", error);
+    return [];
   }
 };
 
 /* ================ COURSES ================ */
 
-//create a new course
+// Create a new course
 export const createCourse = async (id = null, data) => {
   try {
     if (!data.CId || !data.Name || !data.department) {
       throw new Error("Missing required fields: CId, Name, department");
     }
-
     const courseId = id || generateId("course");
-
     await setDoc(doc(db, "courses", courseId), {
       CId: data.CId,
       Name: data.Name,
@@ -176,15 +249,26 @@ export const createCourse = async (id = null, data) => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-
-    console.log(` Course created: ${courseId}`);
+    console.log(`Course created: ${courseId}`);
     return courseId;
   } catch (error) {
     handleError("createCourse", error);
+    return null;
   }
 };
 
-// get single course by ID
+// Get all courses
+export const getAllCourses = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "courses"));
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getAllCourses", error);
+    return [];
+  }
+};
+
+// Get single course by ID
 export const getCourse = async (id) => {
   try {
     const docRef = doc(db, "courses", id);
@@ -192,21 +276,11 @@ export const getCourse = async (id) => {
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
     handleError("getCourse", error);
+    return null;
   }
 };
 
-// get all courses
-export const getAllCourses = async () => {
-  try {
-    const colRef = collection(db, "courses");
-    const snapshot = await getDocs(colRef);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getAllCourses", error);
-  }
-};
-
-// get courses by department
+// Get courses by department
 export const getCoursesByDepartment = async (departmentId) => {
   try {
     const departmentRef = doc(db, "departments", departmentId);
@@ -218,10 +292,11 @@ export const getCoursesByDepartment = async (departmentId) => {
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     handleError("getCoursesByDepartment", error);
+    return [];
   }
 };
 
-// update course
+// Update course
 export const updateCourse = async (id, data) => {
   try {
     const docRef = doc(db, "courses", id);
@@ -229,49 +304,60 @@ export const updateCourse = async (id, data) => {
       ...data,
       updatedAt: serverTimestamp(),
     });
-    console.log(` Course updated: ${id}`);
+    console.log(`Course updated: ${id}`);
+    return true;
   } catch (error) {
     handleError("updateCourse", error);
+    return false;
   }
 };
 
-// delete course
+// Delete course
 export const deleteCourse = async (id) => {
   try {
     const docRef = doc(db, "courses", id);
     await deleteDoc(docRef);
-    console.log(` Course deleted: ${id}`);
+    console.log(`Course deleted: ${id}`);
+    return true;
   } catch (error) {
     handleError("deleteCourse", error);
+    return false;
   }
 };
 
 /* ================ DEPARTMENTS ================ */
 
-//create a new department
+// Create a new department
 export const createDepartment = async (id = null, data) => {
   try {
-    if (!data.dName) {
-      throw new Error("Missing required field: dName");
-    }
-
+    if (!data.dName) throw new Error("Missing required field: dName");
     const deptId = id || generateId("dept");
-
     await setDoc(doc(db, "departments", deptId), {
       dName: data.dName,
       departmentId: deptId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-
-    console.log(` Department created: ${deptId}`);
+    console.log(`Department created: ${deptId}`);
     return deptId;
   } catch (error) {
     handleError("createDepartment", error);
+    return null;
   }
 };
 
-// get single department by ID
+// Get all departments
+export const getAllDepartments = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "departments"));
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getAllDepartments", error);
+    return [];
+  }
+};
+
+// Get single department by ID
 export const getDepartment = async (id) => {
   try {
     const docRef = doc(db, "departments", id);
@@ -279,21 +365,11 @@ export const getDepartment = async (id) => {
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
     handleError("getDepartment", error);
+    return null;
   }
 };
 
-// get all departments
-export const getAllDepartments = async () => {
-  try {
-    const colRef = collection(db, "departments");
-    const snapshot = await getDocs(colRef);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getAllDepartments", error);
-  }
-};
-
-// update department
+// Update department
 export const updateDepartment = async (id, data) => {
   try {
     const docRef = doc(db, "departments", id);
@@ -301,26 +377,30 @@ export const updateDepartment = async (id, data) => {
       ...data,
       updatedAt: serverTimestamp(),
     });
-    console.log(` Department updated: ${id}`);
+    console.log(`Department updated: ${id}`);
+    return true;
   } catch (error) {
     handleError("updateDepartment", error);
+    return false;
   }
 };
 
-// delete department
+// Delete department
 export const deleteDepartment = async (id) => {
   try {
     const docRef = doc(db, "departments", id);
     await deleteDoc(docRef);
-    console.log(` Department deleted: ${id}`);
+    console.log(`Department deleted: ${id}`);
+    return true;
   } catch (error) {
     handleError("deleteDepartment", error);
+    return false;
   }
 };
 
 /* ================ ATTENDANCE ================ */
 
-//maark attendance for a student in a course
+// Mark attendance
 export const markAttendance = async (id = null, data) => {
   try {
     if (!data.course || !data.student || !data.status) {
@@ -328,21 +408,37 @@ export const markAttendance = async (id = null, data) => {
     }
 
     const attId = id || generateId("att");
-
     await setDoc(doc(db, "attendance", attId), {
       ...data,
       date: data.date || serverTimestamp(),
       createdAt: serverTimestamp(),
     });
 
-    console.log(` Attendance marked: ${attId}`);
+    console.log(`Attendance marked: ${attId}`);
     return attId;
   } catch (error) {
     handleError("markAttendance", error);
+    return null;
   }
 };
 
-//mark bulk attendance
+// Get student attendance
+export const getStudentAttendance = async (studentId) => {
+  try {
+    const q = query(
+      collection(db, "attendance"),
+      where("student", "==", doc(db, "users", studentId)),
+      orderBy("date", "desc")
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getStudentAttendance", error);
+    return [];
+  }
+};
+
+// Mark bulk attendance
 export const markBulkAttendance = async (attendanceList) => {
   try {
     const batch = writeBatch(db);
@@ -362,14 +458,16 @@ export const markBulkAttendance = async (attendanceList) => {
     }
 
     await batch.commit();
-    console.log(` Bulk attendance marked: ${ids.length} records`);
+    console.log(`Bulk attendance marked: ${ids.length} records`);
     return ids;
   } catch (error) {
     handleError("markBulkAttendance", error);
+    return [];
   }
 };
 
-// get single attendance by ID
+
+// Get single attendance by ID
 export const getAttendance = async (id) => {
   try {
     const docRef = doc(db, "attendance", id);
@@ -377,10 +475,11 @@ export const getAttendance = async (id) => {
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
     handleError("getAttendance", error);
+    return null;
   }
 };
 
-//get attendance records by course
+// Get attendance records by course
 export const getCourseAttendance = async (courseId) => {
   try {
     const courseRef = doc(db, "courses", courseId);
@@ -393,32 +492,15 @@ export const getCourseAttendance = async (courseId) => {
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     handleError("getCourseAttendance", error);
+    return [];
   }
 };
 
-// get attendance records by student
-export const getStudentAttendance = async (studentId) => {
-  try {
-    const studentRef = doc(db, "users", studentId);
-    const q = query(
-      collection(db, "attendance"),
-      where("student", "==", studentRef),
-      orderBy("date", "desc")
-    );
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getStudentAttendance", error);
-  }
-};
-
-// get attendance records by department
+// Get attendance records by department
 export const getDepartmentAttendance = async (departmentId) => {
   try {
-    // استخدام Reference بدل ID string
     const departmentRef = doc(db, "departments", departmentId);
 
-    // جلب الكورسات فقط بدون كل البيانات
     const coursesQuery = query(
       collection(db, "courses"),
       where("department", "==", departmentRef)
@@ -428,8 +510,7 @@ export const getDepartmentAttendance = async (departmentId) => {
 
     if (courseRefs.length === 0) return [];
 
-    // استخدام where with 'in' بدلاً من filter
-    // ملحوظة: Firestore تدعم max 10 items في 'in' query
+    // Firestore supports max 10 items in 'in' query
     const attendancePromises = [];
     for (let i = 0; i < courseRefs.length; i += 10) {
       const batch = courseRefs.slice(i, i + 10);
@@ -448,10 +529,11 @@ export const getDepartmentAttendance = async (departmentId) => {
     return allDocs;
   } catch (error) {
     handleError("getDepartmentAttendance", error);
+    return [];
   }
 };
 
-// update attendance
+// Update attendance
 export const updateAttendance = async (id, data) => {
   try {
     const docRef = doc(db, "attendance", id);
@@ -460,50 +542,68 @@ export const updateAttendance = async (id, data) => {
       updatedAt: serverTimestamp(),
     });
     console.log(`Attendance updated: ${id}`);
+    return true;
   } catch (error) {
     handleError("updateAttendance", error);
+    return false;
   }
 };
 
-// delete attendance
+// Delete attendance
 export const deleteAttendance = async (id) => {
   try {
     const docRef = doc(db, "attendance", id);
     await deleteDoc(docRef);
-    console.log(` Attendance deleted: ${id}`);
+    console.log(`Attendance deleted: ${id}`);
+    return true;
   } catch (error) {
     handleError("deleteAttendance", error);
+    return false;
   }
 };
 
 /* ================ NOTIFICATIONS ================ */
 
-// create a new notification
+// Create a new notification
 export const createNotification = async (id = null, data) => {
   try {
     if (!data.title || !data.message || !data.user) {
       throw new Error("Missing required fields: title, message, user");
     }
-
     const notifId = id || generateId("notif");
-
     await setDoc(doc(db, "notifications", notifId), {
       title: data.title,
       message: data.message,
       user: data.user,
-      read: data.read || false,
+      read: false,
       date: data.date || serverTimestamp(),
       createdAt: serverTimestamp(),
     });
-
-    console.log(` Notification created: ${notifId}`);
+    console.log(`Notification created: ${notifId}`);
     return notifId;
   } catch (error) {
     handleError("createNotification", error);
+    return null;
   }
 };
 
-// create bulk notifications
+// Get notifications for user
+export const getNotificationsForUser = async (userId) => {
+  try {
+    const q = query(
+      collection(db, "notifications"),
+      where("user", "==", doc(db, "users", userId)),
+      orderBy("date", "desc")
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    handleError("getNotificationsForUser", error);
+    return [];
+  }
+};
+
+// Create bulk notifications
 export const createBulkNotifications = async (notificationsList) => {
   try {
     const batch = writeBatch(db);
@@ -526,14 +626,15 @@ export const createBulkNotifications = async (notificationsList) => {
     }
 
     await batch.commit();
-    console.log(` Bulk notifications created: ${ids.length} records`);
+    console.log(`Bulk notifications created: ${ids.length} records`);
     return ids;
   } catch (error) {
     handleError("createBulkNotifications", error);
+    return [];
   }
 };
 
-// get single notification by ID
+// Get single notification by ID
 export const getNotification = async (id) => {
   try {
     const docRef = doc(db, "notifications", id);
@@ -541,31 +642,11 @@ export const getNotification = async (id) => {
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
     handleError("getNotification", error);
+    return null;
   }
 };
 
-// get notifications for a user
-export const getNotificationsForUser = async (userId, unreadOnly = false) => {
-  try {
-    const userRef = doc(db, "users", userId);
-    let q = query(
-      collection(db, "notifications"),
-      where("user", "==", userRef),
-      orderBy("date", "desc")
-    );
-
-    if (unreadOnly) {
-      q = query(q, where("read", "==", false));
-    }
-
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    handleError("getNotificationsForUser", error);
-  }
-};
-
-//update notification
+// Update notification
 export const updateNotification = async (id, data) => {
   try {
     const docRef = doc(db, "notifications", id);
@@ -573,13 +654,15 @@ export const updateNotification = async (id, data) => {
       ...data,
       updatedAt: serverTimestamp(),
     });
-    console.log(` Notification updated: ${id}`);
+    console.log(`Notification updated: ${id}`);
+    return true;
   } catch (error) {
     handleError("updateNotification", error);
+    return false;
   }
 };
 
-// mark notifications as read (batch)
+// Mark notifications as read (batch)
 export const markNotificationsAsRead = async (notificationIds) => {
   try {
     const batch = writeBatch(db);
@@ -594,23 +677,27 @@ export const markNotificationsAsRead = async (notificationIds) => {
 
     await batch.commit();
     console.log(`Marked ${notificationIds.length} notifications as read`);
+    return true;
   } catch (error) {
     handleError("markNotificationsAsRead", error);
+    return false;
   }
 };
 
-//delete notification
+// Delete notification
 export const deleteNotification = async (id) => {
   try {
     const docRef = doc(db, "notifications", id);
     await deleteDoc(docRef);
-    console.log(` Notification deleted: ${id}`);
+    console.log(`Notification deleted: ${id}`);
+    return true;
   } catch (error) {
     handleError("deleteNotification", error);
+    return false;
   }
 };
 
-// delete all notifications for a user
+// Delete all notifications for a user
 export const deleteAllUserNotifications = async (userId) => {
   try {
     const notifications = await getNotificationsForUser(userId);
@@ -625,7 +712,9 @@ export const deleteAllUserNotifications = async (userId) => {
     console.log(
       `Deleted ${notifications.length} notifications for user: ${userId}`
     );
+    return true;
   } catch (error) {
     handleError("deleteAllUserNotifications", error);
+    return false;
   }
 };

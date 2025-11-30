@@ -1,68 +1,118 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const role = localStorage.getItem("role");
-  if (role !== "admin") return;
+import { getAllUsers, deleteUser } from "../../firebase/firebase-helper.js";
 
-  const content = document.querySelector("#dashboardContent");
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    console.log("Loading users management page...");
 
-  content.innerHTML = `
-  <main class="p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+    const role = localStorage.getItem("role");
+    if (!role || (role !== "admin" && role !== "instructor")) {
+      console.warn("Unauthorized access");
+      window.location.href = "/index.html";
+      return;
+    }
 
-    <!-- Stats Cards -->
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-users text-[#012970] text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Total Students</p>
-        <p class="text-xl font-bold">2,439</p>
-      </div>
-    </div>
+    const tbody = document.querySelector("tbody");
+    if (!tbody) return;
 
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-chalkboard-user text-green-600 text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Instructors</p>
-        <p class="text-xl font-bold">54</p>
-      </div>
-    </div>
+    tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-gray-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading users...</td></tr>`;
 
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-building text-purple-600 text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Departments</p>
-        <p class="text-xl font-bold">12</p>
-      </div>
-    </div>
+    const data = await getAllUsers();
+    if (!data || !data.users || !data.users.length) {
+      tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-gray-500">No users found.</td></tr>`;
+      return;
+    }
 
-    <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-      <i class="fa-solid fa-book text-orange-600 text-3xl"></i>
-      <div>
-        <p class="text-sm text-gray-500">Courses</p>
-        <p class="text-xl font-bold">87</p>
-      </div>
-    </div>
-
-    <!-- Recent Activity -->
-    <section class="bg-white rounded-xl shadow p-6 lg:col-span-4">
-      <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
-
-      <ul class="space-y-3">
-        <li class="flex justify-between border-b border-gray-200 pb-2">
-          <p>New student added: <span class="font-semibold">Ahmed Ali</span></p>
-          <span class="text-gray-400 text-sm">2 hours ago</span>
-        </li>
-
-        <li class="flex justify-between border-b border-gray-200 pb-2">
-          <p>Instructor updated schedule</p>
-          <span class="text-gray-400 text-sm">5 hours ago</span>
-        </li>
-
-        <li class="flex justify-between">
-          <p>New course created: <span class="font-semibold">Math 101</span></p>
-          <span class="text-gray-400 text-sm">1 day ago</span>
-        </li>
-      </ul>
-    </section>
-
-  </main>
-   
-  `;
+    renderUsers(data.users);
+  } catch (error) {
+    console.error(error);
+    const tbody = document.querySelector("tbody");
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500"><i class="fa-solid fa-exclamation-triangle mr-2"></i>Failed to load users. Please try again.</td></tr>`;
+    }
+  }
 });
+
+function renderUsers(users) {
+  const tbody = document.querySelector("tbody");
+  if (!tbody) return;
+
+  tbody.innerHTML = users
+    .map(
+      (user) => `
+    <tr class="border-b border-gray-200 hover:bg-gray-50 block md:table-row p-3 md:p-0" data-user-id="${
+      user.id
+    }">
+      <td class="px-4 py-3 block md:table-cell"><span class="font-semibold md:hidden">Name: </span>${
+        user.name || "N/A"
+      }</td>
+      <td class="px-4 py-3 block md:table-cell"><span class="font-semibold md:hidden">Email: </span>${
+        user.email || "N/A"
+      }</td>
+      <td class="px-4 py-3 block md:table-cell"><span class="font-semibold md:hidden">Role: </span>${
+        user.role || "N/A"
+      }</td>
+      <td class="px-4 py-3 flex justify-center md:table-cell md:text-center">
+        <button class="delete-btn" data-user-id="${
+          user.id
+        }"><i class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"></i></button>
+        <button class="update-btn ml-2" data-user-id="${
+          user.id
+        }"><i class="fa-solid fa-pen text-blue-600 text-lg cursor-pointer"></i></button>
+      </td>
+    </tr>
+  `
+    )
+    .join("");
+
+  attachDeleteHandlers();
+}
+
+function attachDeleteHandlers() {
+  const deleteButtons = document.querySelectorAll(".delete-btn");
+  deleteButtons.forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const userId = btn.dataset.userId;
+      const row = btn.closest("tr");
+      const userName = row
+        .querySelector("td:first-child")
+        .textContent.replace("Name: ", "")
+        .trim();
+
+      if (
+        !userId ||
+        !confirm(`Are you sure you want to delete user "${userName}"?`)
+      )
+        return;
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fa-solid fa-spinner fa-spin text-gray-400"></i>';
+
+        const success = await deleteUser(userId);
+        if (success) {
+          row.style.opacity = "0";
+          row.style.transition = "opacity 0.3s";
+          setTimeout(() => {
+            row.remove();
+            if (!document.querySelector("tbody").children.length) {
+              document.querySelector(
+                "tbody"
+              ).innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-gray-500">No users found.</td></tr>`;
+            }
+          }, 300);
+          alert("User deleted successfully!");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to delete user. Try again.");
+        btn.disabled = false;
+        btn.innerHTML =
+          '<i class="fa-solid fa-trash text-red-600 text-lg cursor-pointer"></i>';
+      }
+    });
+  });
+}
+
+export { renderUsers };
